@@ -417,16 +417,29 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                     showMessage(this, "The Table is being accessed by another User!Cannot update the bill");
                       logger.info("The Table is being accessed by another User!Cannot update the bill");
                     int iskds = dlReceipts.getKdsUpdateStatus(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket().getSplitSharedId());
-                    if (iskds == 1) {
+                    System.out.println("ISKDS value"+iskds);
+                    if (iskds == 0) {
                         RetailTicketInfo ticket = dlReceipts.getRetailSharedTicketSplit(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket().getSplitSharedId());
                         if (ticket != null) {
                             ticket.setTicketOpen(false);
+                            System.out.println("updation for kds 0");
                             dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), ticket);
+                           // dlReceipts.updateSharedTicketTemp(m_PlaceCurrent.getId(), ticket);
+                            
                             if (ticket.getTakeaway().equals("Y")) {
                                 dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), ticket);
                             }
                         }
                     }
+                   /*  if (iskds == 1) {
+                        RetailTicketInfo ticket = dlReceipts.getRetailSharedTicketSplit(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket().getSplitSharedId());
+                        if (ticket != null) {
+                            ticket.setTicketOpen(false);
+                            System.out.println("updation for kds 1");
+                            //dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), ticket);
+                            dlReceipts.updateSharedTicketTemp(m_PlaceCurrent.getId(), ticket);
+                    
+                    */
                 } else {
                     if (m_panelticket.getActiveTicket().getOrderId() == 0) {
                         logger.info("Order No." + m_panelticket.getActiveTicket().getOrderId() + " deleting 0 order no. Bill in newticket method of  "+m_panelticket.getActiveTicket().getTableName()+" id is "+m_PlaceCurrent.getId());
@@ -564,6 +577,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                 dlReceipts.updateSharedSplitTicket(m_PlaceCurrent.getId(), ticket1);
                 //  splitId= UUID.randomUUID().toString().replaceAll("-", "");
                 //  ticket2.setSplitSharedId(splitId);
+                System.out.println("calling insert sahre ticket");
                 dlReceipts.insertRetailSharedTicket(m_PlaceCurrent.getId(), ticket2);
                 if (ticket1.getTakeaway().equals("Y")) {
                     dlReceipts.updateTakeawaySplitTicket(m_PlaceCurrent.getId(), ticket1);
@@ -1165,13 +1179,22 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                         ticket.setTakeaway(m_place.getTakeaway());
                         ticket.setTicketOpen(true);
                         ticket.setUser(m_App.getAppUserView().getUser().getUserInfo());
+       
                         ticket.setPlaceid(m_place.getId());
                         ticket.setObjectUpdateDate(new Date());
+                        
+
                         try {
+                            System.out.println("calling insert shareticket");
                             dlReceipts.insertRetailSharedTicket(m_place.getId(), ticket);
+                             //System.out.println("calling insert sharetickettemp");
+                           // dlReceipts.insertRetailSharedTicketTemp(m_place.getId(), ticket);
+                            
                             if (ticket.getTakeaway().equals("Y")) {
                                 dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticket);
                             }
+                                  System.out.println("calling insert sharetickettemp");
+                           
                              setActivePlace(m_place, ticket);
                         } catch (BasicException e) {
                             logger.info("actionPerformed in map class exception 1 " + e.getMessage());
@@ -1335,6 +1358,7 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                                 }
                                 ticketclip.setPlaceid(getNewTableId());
                                 ticketclip.setNoOfCovers(getTableCovers(getNewTableId(), ticketclip.getSplitSharedId()));
+                                System.out.println("insert sharedtickets");
                                 dlReceipts.insertRetailSharedTicket(m_place.getId(), ticketclip);
                                 m_place.setPeople(true);
                                   logger.info("Order No." + ticketclip.getOrderId() + "deleting moved Bill in actionperformed method of "+ticketclip.getOldTableName()+" and id is "+m_PlaceClipboard.getId());
