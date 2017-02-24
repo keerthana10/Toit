@@ -313,7 +313,8 @@ class JCancelReasonEditor extends JDialog {
 
                        for(int i=0;i<tinfoLocal.getLinesCount();i++){
                            //changed to save with server date
-                              localDlReceipts.insertCancelledKot(tinfoLocal.getId(),tinfoLocal.getTicketId(),panelLines.get(i).getProductID(), "Y",
+                           System.out.println("From JcancelReasonEditor");
+                           localDlReceipts.insertCancelledKot(tinfoLocal.getId(),tinfoLocal.getTicketId(),panelLines.get(i).getProductID(), "Y",
                                       (1*panelLines.get(i).getMultiply()) ,panelLines.get(i).getKotid(),"Y",reason,reasonId,tinfoLocal.getPlaceId(),
                                       tinfoLocal.getUser().getId(),tinfoLocal.getOrderId());
                        }

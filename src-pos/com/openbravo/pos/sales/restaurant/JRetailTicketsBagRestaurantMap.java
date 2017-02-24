@@ -51,6 +51,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     private static String tableId;
     private static String newTableId;
     private static String newTableName;
+    public String old_table_id;
 //    private static final Icon ICO_OCU = new ImageIcon(JTicketsBag.class.getResource("/com/openbravo/images/edit_group.png"));
 //    private static final Icon ICO_FRE = new NullIcon(22, 22);
     private java.util.List<Place> m_aplaces;
@@ -274,6 +275,8 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     public void moveTicket() {
         logger.info("Move Ticket Action Table name: " + m_panelticket.getActiveTicket().getTableName());
         try {
+            System.out.println("Move Ticket Clickewd");
+            System.out.println("This is Old Table Id"+m_PlaceCurrent.getId());
             String currentUpdated = m_dateformat.format(m_panelticket.getActiveTicket().getObjectUpdateDate()) + " " + m_dateformattime.format(m_panelticket.getActiveTicket().getObjectUpdateDate());
             String dbUpdated = dlReceipts.getUpdatedTime(m_panelticket.getActiveTicket().getPlaceId(), m_panelticket.getActiveTicket().getSplitSharedId());
             Date currentUpdatedDate = DateFormats.StringToDateTime(currentUpdated);
@@ -331,6 +334,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                         m_panelticket.getActiveTicket().refreshTxtFields(0);
                         if (m_PlaceCurrent != null) {
                             try {
+                                System.out.println("New Id of the table where to be moved "+m_PlaceCurrent.getId());
                                 dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
                                 if (m_panelticket.getActiveTicket().getTakeaway().equals("Y")) {
                                     dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
@@ -946,7 +950,7 @@ logger.info( "clearing the table in deleteTicket method of map ");
     }
 
     private void setActivePlace(Place place, RetailTicketInfo ticket) {
-
+System.out.println("After setactive place in Jretailticketbagresta..map "+ticket.getPlaceId()+".."+ticket.getOldTableName());
         System.out.println("m_PlaceCurrent --" + place.hasPeople());
         ticket.setM_App(m_App);
         this.retailTicket = ticket;
@@ -1155,6 +1159,7 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
         }
 
         public void actionPerformed(ActionEvent evt) {
+            
             System.out.println("11");
             if (m_PlaceClipboard == null) {
                 System.out.println("12");
@@ -1193,8 +1198,9 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                             if (ticket.getTakeaway().equals("Y")) {
                                 dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticket);
                             }
-                                  System.out.println("calling insert sharetickettemp");
-                           
+                                  
+                              System.out.println("Before setactive place in JRetailticketbagresta..map11");
+                           // System.out.println("calling insert sharetickettemp");                           
                              setActivePlace(m_place, ticket);
                         } catch (BasicException e) {
                             logger.info("actionPerformed in map class exception 1 " + e.getMessage());
@@ -1266,6 +1272,7 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                                 Logger.getLogger(JRetailTicketsBagRestaurantMap.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
+                          System.out.println("Before setactive place in JRetailticketbagresta..map22");
                         setActivePlace(m_place, ticket);
                         //    }
                         //  }
@@ -1308,7 +1315,7 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
 
                         m_PlaceClipboard = null;
                         customer = null;
-
+  System.out.println("Before setactive place in JRetailticketbagresta..map33");
                         setActivePlace(m_place, ticket);
                     } else {
                         // TODO: msg: The table is now full
@@ -1337,6 +1344,7 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                         m_PlaceClipboard = null;
                         customer = null;
                         printState();
+                          System.out.println("Before setactive place in Jretailticketbagresta..map44");
                         setActivePlace(placeclip, ticketclip);
                     } else if (!m_place.hasPeople()) {
                         // Moving the receipt to an empty table
@@ -1365,7 +1373,10 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                                 dlReceipts.deleteSharedTicket(m_PlaceClipboard.getId());
                                 if (ticketclip.getTakeaway().equals("Y")) {
                                     dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticketclip);
-                                    dlReceipts.deleteTakeawayTicket(m_PlaceClipboard.getId());
+                                   // dlReceipts.deleteTakeawayTicket(m_PlaceClipboard.getId());
+                                    System.out.println("deleting previous table id:"+m_PlaceClipboard.getId());
+                                     old_table_id=m_PlaceClipboard.getId();
+                                      //System.out.println("deleting previous table id:"+old_table_id);
                                 }
                                 m_PlaceClipboard.setPeople(false);
                                 setNewTableName(m_place.getName());
@@ -1381,6 +1392,14 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
 
                             // No hace falta preguntar si estaba bloqueado porque ya lo estaba antes
                             // activamos el ticket seleccionado
+                             System.out.println("Before setactive place in Jretailticketbagresta..map55"+"\n old Id ref"+ old_table_id);
+                            System.out.println("Before setactive place in Jretailticketbagresta..map55"+"\n new Id ref"+ ticketclip.getPlaceId());
+                            try{
+                            dlReceipts.updateServedTransactionMoveAsModify(old_table_id,"Modify");
+                            }catch (BasicException e) {
+                                logger.info("actionPerformed in map class exception 10 " + e.getMessage());
+                                new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this); // Glup. But It was empty.
+                            }
                             setActivePlace(m_place, ticketclip);
                         } else {
                             // Full table

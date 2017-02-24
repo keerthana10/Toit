@@ -1885,7 +1885,10 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                                System.out.println("kds before check");
                             dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), ticket);
                             //System.out.println("kds check");
-                            //dlReceipts.updateSharedTicketTemp(m_PlaceCurrent.getId(), ticket);
+                            
+                            //dlReceipts.updateservedhistory(m_oTicket);
+                            
+                              
                             if (ticket.getTakeaway().equals("Y")) {
                                 dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), ticket);
                             }
@@ -1992,6 +1995,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                         } else {
                             m_oTicket.setTicketOpen(false);
                             dlReceipts.updateSharedTicket(m_oTicket.getPlaceId(), m_oTicket);
+                           // dlReceipts.updateServedTransaction(m_oTicket;
                             if (m_oTicket.getTakeaway().equals("Y")) {
                                 dlReceipts.updateTakeawayTicket(m_oTicket.getPlaceId(), m_oTicket);
                             }
@@ -2705,8 +2709,12 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
 //}
     private void paintTicketLine(int index, RetailTicketLineInfo oLine) {
         System.out.println("oLine" + oLine.getIsKot());
+        
+         
         if (executeEventAndRefresh("ticket.setline", new ScriptArg("index", index), new ScriptArg("line", oLine)) == null) {
             m_oTicket.setLine(index, oLine);
+             System.out.println("oLine---mutiplyqty" + oLine.getMultiply()+m_oTicket.getPlaceId());
+               dlReceipts.updateServedTransactionModify(m_oTicket,oLine.getTbl_orderId());
             m_ticketlines.setTicketLine(index, oLine);
             m_ticketlines.setSelectedIndex(index);
             visorTicketLine(oLine); // Y al visor tambien...
@@ -2714,6 +2722,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                 printPartialTotals();
                 stateToZero();
                 executeEventAndRefresh("ticket.change");
+                
             }
         }
     }
@@ -5920,9 +5929,11 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
     private void m_jDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jDeleteActionPerformed
         logger.info("Cancel Line Action Button:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
         int i = m_ticketlines.getSelectedIndex();
+       
         if (i < 0) {
             Toolkit.getDefaultToolkit().beep(); // No hay ninguna seleccionada
         } else {
+             dlReceipts.updateServedTransactionCancel(m_oTicket,m_oTicket.getLine(i).getTbl_orderId());
             String selectedProduct = m_oTicket.getLine(i).getProductID();
             int kotStatus = m_oTicket.getLine(i).getIsKot();
             String addonVal = m_oTicket.getLine(i).getAddonId();
@@ -5967,6 +5978,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                         } else {
                             if (JReasonEditor.getCancel() == true) {
                                 kotlogger.info("KOT cancelled Successfully " + "," + "Username: " + m_oTicket.printUser() + "," + "Kot No: " + m_oTicket.getLine(i).getKotid() + "," + "Table: " + m_oTicketExt.toString() + "," + "Order No: " + m_oTicket.getOrderId() + "," + "Product Name: " + m_oTicket.getLine(i).getProductName() + "," + "Qty: " + m_oTicket.getLine(i).getMultiply() + "," + "Timestamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
+                              
                                 removeTicketLine(i);
                                 //adding the logic of deleting the addon items
                                 if (addonVal != null && primaryAddon == 1 || (addonVal != null && comboAddon == 1)) {
@@ -6121,11 +6133,15 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                     } else {
                         if (JReasonEditor.getCancel() == true) {
                             newline.setMultiply(newline.getMultiply() - 1.0);
+                            double qty=newline.getMultiply();
+                             
                             kotlogger.info("KOT cancelled Successfully one qty " + "," + "Username: " + m_oTicket.printUser() + "," 
                                     + "Kot No: " + m_oTicket.getLine(i).getKotid() + "," + "Table: " + m_oTicketExt.toString() + "," 
                                     + "Order No: "+ m_oTicket.getOrderId() + "," + "Product Name: " + m_oTicket.getLine(i).getProductName() + ","
                                     + "Qty: " + m_oTicket.getLine(i).getMultiply() + "," + "Timestamp: " + 
                                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
+                            //System.out.println("Under Minus action" + qty);
+                      //dlReceipts.updateServedTransaction(m_oTicket,qty,"MODIFY");
                             if (addonVal != null && primaryAddon == 1 || (addonVal != null && comboAddon == 1)) {
                                 int j = 0;
                                 while (j < m_oTicket.getLinesCount()) {
@@ -6137,11 +6153,14 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                                                 + m_oTicket.getLine(j).getProductName() + "," + "Qty: " + m_oTicket.getLine(j).getMultiply() + "," 
                                                 + "Timestamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
                                         j = 0;
+                                       // System.out.println("Under Minus action"+m_oTicket.getLine(i).getMultiply());
+                                       // dlReceipts.updateServedTransaction(m_oTicket,"MODIFY");
                                     } else {
                                         j++;
                                     }
                                 }
                             }
+                            
                             // Date updated = new Date();
                             Object[] values = new Object[]{m_oTicket.getPlaceId(), m_oTicket.getName(), m_oTicket, m_oTicket.getSplitSharedId(), m_oTicket.isPrinted(), m_oTicket.isListModified()};
                             Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN};
@@ -6169,6 +6188,8 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
 
 
                     }
+                   
+                    
                 } else {
                     showMessage(this, "Item is sent to kot.Only Cashier or Manager can cancel the line.");
                     logger.info("Item is sent to kot.Only Cashier or Manager can cancel the line.");
@@ -6564,7 +6585,8 @@ System.out.println("onkotpunch");
                                 uniqueProductionAreas.get(i).getProductID(), "Y", uniqueProductionAreas.get(i).getMultiply(), 
                                 uniqueProductionAreas.get(i).getKotid(), "N", "", "", m_oTicket.getPlaceId(), m_oTicket.getUser().getId(),
                                 m_oTicket.getOrderId());
-                                             dlReceipts.insertservedhistory(m_oTicket);
+                                             //dlReceipts.insertservedhistory(m_oTicket);
+                         dlReceipts.insertServedTransaction(m_oTicket,"ADD",roleName);
 
                         
                     }
@@ -6588,8 +6610,8 @@ System.out.println("onkotpunch");
                         dlReceipts.insertRetailPrintedKot(m_oTicket.getId(), m_oTicket.getTicketId(), uniqueProductionAreas.get(i).getProductID(), "Y", uniqueProductionAreas.get(i).getMultiply(), uniqueProductionAreas.get(i).getKotid(), "N", "", "", m_oTicket.getPlaceId(), m_oTicket.getUser().getId(), m_oTicket.getOrderId());
                                                 System.out.println("INSIDE CATCH ");
 
-                                            dlReceipts.insertservedhistory(m_oTicket);
-
+                                          //  dlReceipts.insertservedhistory(m_oTicket);
+         dlReceipts.insertServedTransaction(m_oTicket,"ADD",roleName);
                     }
                     kotaction = 1;
                     showMessage(this, "KOT could not be sent to the Production Area. Please check the network connection.");

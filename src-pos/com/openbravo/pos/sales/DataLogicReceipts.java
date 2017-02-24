@@ -87,14 +87,14 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
     }
 
     public final void updateSharedTicket(final String id, final TicketInfo ticket) throws BasicException {
-        System.out.println("update in sharedtickets");
+        System.out.println("update in sharedtickets1");
         Object[] values = new Object[]{id, ticket.getName(), ticket};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE};
         new PreparedSentence(s, "UPDATE SHAREDTICKETS SET NAME = ?, CONTENT = ? WHERE ID = ?", new SerializerWriteBasicExt(datas, new int[]{1, 2, 0})).exec(values);
     }
 
     public final void updateSharedTicket(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("in updateSharedTicket method" + ticket.isTicketOpen());
+        System.out.println("in updateSharedTicket method2" + ticket.isTicketOpen()+"--"+id);
 
         Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
@@ -102,7 +102,7 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
     }
 
     public final void updateSharedTicketTemp(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("in updateSharedTicket method" + ticket.isTicketOpen());
+        System.out.println("in updateSharedTicket method3" +id+ticket.isTicketOpen());
 
         Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
@@ -110,7 +110,7 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
     }
 
     public final void updateTakeawayTicket(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("in updateSharedTicket method" + ticket.isTicketOpen());
+        System.out.println("in updateSharedTicket method4" +id+ ticket.isTicketOpen());
         Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
         new PreparedSentence(s, "UPDATE TAKEAWAYTICKETS SET NAME = ?, CONTENT = ?, ISPRINTED = ?, ISMODIFIED = ?,UPDATED=NOW(),ISKDS=?  WHERE ID = ? AND SPLITID=? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 4, 5, 6, 0, 3})).exec(values);
@@ -796,7 +796,7 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
 //        }
 //    }
 
-    public void insertservedhistory(RetailTicketInfo m_oTicket) {
+  /*  public void insertservedhistory(RetailTicketInfo m_oTicket) {
 
         for (RetailTicketLineInfo l : m_oTicket.getLines()) {
             
@@ -811,3 +811,87 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
         }
     }
 }
+*/
+
+ public void insertServedTransaction(RetailTicketInfo m_oTicket,String txstatus,String roleName) {
+
+        for (RetailTicketLineInfo l : m_oTicket.getLines()) {
+            
+            System.out.println("IDDDDDDDDD : "+l.getTbl_orderId());
+            Object[] values = new Object[]{l.getTbl_orderId(),m_oTicket.getPlaceId(),txstatus,l.getKotid(), l.getDuplicateProductName(), l.getMultiply(), l.getPreparationTime(), l.getKotdate(), l.getKdsPrepareStatus(), l.getInstruction(), l.getAddonId(), l.getPrimaryAddon(), l.getProductionArea(), l.getStation(), l.getPreparationStatus(), roleName,l.getServedTime()};
+            Datas[] datas = new Datas[]{Datas.STRING,Datas.STRING,Datas.STRING,Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.TIMESTAMP, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING,Datas.TIMESTAMP};
+            try { 
+                new PreparedSentence(s, "INSERT INTO SERVEDTRANSACTION (ORDERITEM_ID,TABLEID,TXSTATUS,KOTID,PRODUCTNAME,MULTIPLY,PREPARATIONTIME,KOTDATE,KDSPREPARESTATUS,INSTRUCTION,ADDONID,PRIMARYADDON,PRODUCTIONAREA,STATION,PREPARATIONSTATUS,UPDATEDBY,UPDATEDTIME) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,15})).exec(values);
+            } catch (BasicException ex) {
+                ex.printStackTrace();
+                //Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+ 
+
+     public final void updateServedTransactionMoveAsModify(final String id,final String  mod) throws BasicException {
+        System.out.println("update in MoveServed Transaction--tableId is "+id);
+        Object[] values = new Object[]{id, mod};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING};
+        try {  
+        new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET TXSTATUS = ? WHERE TABLEID = ?", new SerializerWriteBasicExt(datas, new int[]{1,0})).exec(values);
+    }catch (BasicException ex) {
+                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+     }
+
+ public void updateServedTransactionModify(RetailTicketInfo m_oTicket,final String id) {
+
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {     
+            if(id == newline.getTbl_orderId()){
+  System.out.println("UPDATING TABLE for minus : "+m_oTicket.getPlaceId()+newline.getTbl_orderId()+"..."+newline.getMultiply()+"date:::"+newline.getKotdate());
+//Object[] values = new Object[]{l.getTbl_orderId(),m_oTicket.getPlaceId(),l.getKotid(), l.getDuplicateProductName(), l.getMultiply(), l.getPreparationTime(), l.getKotdate(), l.getKdsPrepareStatus(), l.getInstruction(), l.getAddonId(), l.getPrimaryAddon(), l.getProductionArea(), l.getStation(), l.getPreparationStatus(), l.getServedBy(), l.getServedTime()};
+            //Datas[] datas = new Datas[]{Datas.STRING,Datas.STRING,Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.TIMESTAMP, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.TIMESTAMP};
+Object[] values = new Object[]{newline.getMultiply(),newline.getKotdate(),newline.getTbl_orderId()};
+Datas[] datas = new Datas[]{Datas.DOUBLE,Datas.TIMESTAMP,Datas.STRING,};
+    try {        
+new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET MULTIPLY = ?,KOTDATE = ?,TXSTATUS = 'MODIFY',UPDATEDTIME=NOW() WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2})).exec(values);
+        } catch (BasicException ex) {
+                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+           
+        }
+    }
+ }
+
+ public void updateServedTransactionCancel(RetailTicketInfo m_oTicket,final String id) {
+
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {   
+            if(id == newline.getTbl_orderId()){
+  System.out.println("UPDATING TABLE for cancel X : "+m_oTicket.getPlaceId()+newline.getTbl_orderId()+"..."+newline.getMultiply()+"date:::"+newline.getKotdate());
+//Object[] values = new Object[]{l.getTbl_orderId(),m_oTicket.getPlaceId(),l.getKotid(), l.getDuplicateProductName(), l.getMultiply(), l.getPreparationTime(), l.getKotdate(), l.getKdsPrepareStatus(), l.getInstruction(), l.getAddonId(), l.getPrimaryAddon(), l.getProductionArea(), l.getStation(), l.getPreparationStatus(), l.getServedBy(), l.getServedTime()};
+            //Datas[] datas = new Datas[]{Datas.STRING,Datas.STRING,Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.TIMESTAMP, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.TIMESTAMP};
+Object[] values = new Object[]{newline.getKotdate(),newline.getTbl_orderId()};
+Datas[] datas = new Datas[]{Datas.TIMESTAMP,Datas.STRING,};
+    try {        
+new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET KOTDATE = ?,TXSTATUS = 'CANCEL',UPDATEDTIME=NOW() WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1})).exec(values);
+        } catch (BasicException ex) {
+                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+           
+        }
+        }
+        
+    }
+ /* public final void deleteFromServedtransaction(final String id) throws BasicException {
+
+        new StaticSentence(s, "DELETE FROM TBL_ORDERITEM WHERE ORDERITEM_ID = ? ", SerializerWriteString.INSTANCE).exec(id);
+    }*/
+/* public final void updateSharedTicketTemp(final String id, final RetailTicketInfo ticket) throws BasicException {
+        System.out.println("in updateSharedTicket method" + ticket.isTicketOpen());
+
+        Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
+        new PreparedSentence(s, "UPDATE SHAREDTICKETS SET ISPRINTED = ?, ISMODIFIED = ?,UPDATED=NOW(),ISKDS=?  WHERE ID = ? AND SPLITID=? ", new SerializerWriteBasicExt(datas, new int[]{4, 5, 6, 0, 3})).exec(values);
+ 
+ }*/
+ 
+ 
+
+}//end class

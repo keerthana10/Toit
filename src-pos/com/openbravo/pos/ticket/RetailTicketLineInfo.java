@@ -1817,9 +1817,10 @@ public String setPromotionType(String id){
     /**
      * @param servedTime the servedTime to set
      */
-    public void setServedTime(Date servedTime) {
+    public void setServedTime(java.util.Date servedTime) {
         this.servedTime = servedTime;
     }
+  
 
     /**
      * @return the servedBy
