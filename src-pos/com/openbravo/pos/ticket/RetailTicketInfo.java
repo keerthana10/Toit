@@ -28,9 +28,14 @@ import java.text.SimpleDateFormat;
 import com.openbravo.pos.payment.PaymentInfo;
 import com.openbravo.data.loader.DataRead;
 import com.openbravo.data.loader.SerializableRead;
+import com.openbravo.data.loader.PreparedSentence;
 import com.openbravo.format.Formats;
 import com.openbravo.basic.BasicException;
+import com.openbravo.data.gui.MessageInf;
+import com.openbravo.data.loader.Datas;
 import com.openbravo.data.loader.LocalRes;
+import com.openbravo.data.loader.PreparedSentence;
+import com.openbravo.data.loader.SerializerWriteBasicExt;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.forms.AppView;
 import com.openbravo.pos.forms.BillPromoRuleInfo;
@@ -47,9 +52,11 @@ import com.openbravo.pos.sales.JRetailPanelTicket;
 import com.openbravo.pos.sales.JTicketLines;
 import com.openbravo.pos.sales.kotInfo;
 import com.openbravo.pos.sales.shared.JTicketsBagShared;
+import com.openbravo.pos.sales.DataLogicReceipts;
 import com.openbravo.pos.util.StringUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  *
@@ -85,6 +92,7 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     private double billValue;
     public java.util.ArrayList<BillPromoRuleInfo> billPromoRuleList;
     protected DataLogicSales dlSales;
+      public DataLogicReceipts dlReceipts;
     protected RetailTicketInfo m_oTicket;
 //     protected TicketInfo m_oTicket1;
     protected JTicketLines m_ticketlines;
@@ -149,6 +157,7 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     private String takeaway;
     private ArrayList<AccessInfo> accessInfo;
     private boolean taxExempt=false;
+     //Logger logger = Logger.getLogger("MyLog");
 
     public boolean isTicketOpen() {
         return ticketOpen;
@@ -1809,8 +1818,15 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
             //adding one line to check the kot status (by shilpa ) especially used when moving table with printed bill
             if (lineItem.getIsKot() == 1) {
                 allLines.add(lineItem.copyTicketLine()); //create duplicate of each line item and add it to duplicate list
-            }
+                  //    servedhistorytable(lineItem);        //created by Keerthana
+                            }
         }
+        
+       /*for (RetailTicketLineInfo l : allLines) { 
+System.out.println("retailticketlineinfo.java--- tbl_orderId"+l.getTbl_orderId());
+dlReceipts.insertservedhistory(l.getTbl_orderId(),l.getKotid(),l.getDuplicateProductName(),l.getMultiply(),l.getPreparationTime(),l.getKotdate(),l.getKdsPrepareStatus(),l.getInstruction(),l.getAddonId(),l.getPrimaryAddon(),l.getProductionArea(),l.getStation(),l.getPreparationStatus(),l.getServedBy(),l.getServedTime());
+       }*/
+        
         List<RetailTicketLineInfo> uniqueLines = new ArrayList<RetailTicketLineInfo>(); //consolidated list of all line-items
         Set<String> productNames = new HashSet<String>(); //set dealing with names of products with no duplicate
         Set<String> ZeroValueproductNames = new HashSet<String>();
@@ -1863,6 +1879,26 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
         return uniqueLines; //return this consolidated list
     }
 
+  public void servedhistorytable(RetailTicketLineInfo l )
+        {  
+            //code by keerthana
+            
+        //try{         
+System.out.println("retailticketlineinfo.java--- tbl_orderId"+l.getTbl_orderId());
+//dlReceipts.insertservedhistory(l.getTbl_orderId(),l.getKotid(),l.getDuplicateProductName(),l.getMultiply(),l.getPreparationTime(),l.getKotdate(),l.getKdsPrepareStatus(),l.getInstruction(),l.getAddonId(),l.getPrimaryAddon(),l.getProductionArea(),l.getStation(),l.getPreparationStatus(),l.getServedBy(),l.getServedTime());
+
+Object[] values = new Object[] {l.getTbl_orderId(),l.getKotid(),l.getDuplicateProductName(),l.getMultiply(),l.getPreparationTime(),l.getKotdate(),l.getKdsPrepareStatus(),l.getInstruction(),l.getAddonId(),l.getPrimaryAddon(),l.getProductionArea(),l.getStation(),l.getPreparationStatus(),l.getServedBy(),l.getServedTime()};
+ Datas[] datas = new Datas[] {Datas.STRING,Datas.INT,Datas.STRING,Datas.DOUBLE,Datas.STRING,Datas.TIMESTAMP,Datas.STRING,Datas.STRING,Datas.STRING,Datas.INT,Datas.STRING,Datas.STRING,Datas.INT,Datas.STRING,Datas.TIMESTAMP};
+ try {
+ new PreparedSentence(m_App.getSession(),"INSERT INTO SERVEDHISTORY (ORDERITEM_ID,KOTID,PNAME,MULTIPLY,PREPARATIONTIME,KOTDATE,KDSPREPARESTATUS,INSTRUCTION,ADDONID,PRIMARYADDON,PRODUCTIONAREA,STATION,PREPARATIONSTATUS,SERVEDBY,SERVEDTIME) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14})).exec(values);
+  } catch (BasicException ex) {
+   Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    
+        }
+                  
+      
+    
     public String printTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
         return sdf.format(m_dDate);

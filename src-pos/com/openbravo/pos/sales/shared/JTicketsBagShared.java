@@ -97,7 +97,10 @@ public class JTicketsBagShared extends JTicketsBag {
         if (m_sCurrentTicket != null) {
 
             try {
+                System.out.println("Insert from ticketbagshared");
                 dlReceipts.insertSharedTicket(m_sCurrentTicket, m_panelticket.getActiveTicket());
+               // System.out.println("Insert from ticketbagshared");
+                //dlReceipts.insertSharedTicketTemp(m_sCurrentTicket, m_panelticket.getActiveTicket());
             } catch (BasicException e) {
                 new MessageInf(e).show(this);
             }  
