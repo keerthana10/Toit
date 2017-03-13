@@ -152,6 +152,7 @@ public class PreparedSentence extends JDBCSentence {
                 }
             }
         } catch (SQLException eSQL) {
+           // eSQL.printStackTrace();
             throw new BasicException(eSQL);
         }
     }

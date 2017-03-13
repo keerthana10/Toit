@@ -3629,6 +3629,9 @@ public class DataLogicSales extends BeanFactoryDataSingle {
                         }
                     });
                     printlogger.info("Bill Printed Successfully  " + "," + "Username: " + ticket.printUser() + "," + "Total kot count: " + ticket.getLinesCount() + "," + "Kot No: " + l.getKotid() + "," + "Table: " + ticket.getTableName() + "," + "Order No: " + ticket.getOrderId() + "," + "Product Name: " + l.getProductName() + "," + "Qty: " + l.getMultiply() + "," + "Timestamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
+                   // System.out.println("old OrderItem Id"+splitTicket.getLine(i).getTbl_orderId()+"New orderItemId"+tbl_orderitemId);
+               // System.out.println("kot id "+splitTicket.getLine(i).getKotid());
+                //dlReceipts.updateServedTransactionSplit(ticket,ticket.getPlaceId(),splitTicket.getLine(i).getTbl_orderId(),tbl_orderitemId,oldordernum,newordernum);
                 }
 
                 return null;
