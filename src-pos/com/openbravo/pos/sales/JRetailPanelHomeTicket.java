@@ -5774,6 +5774,7 @@ private JPanel getLabelPanel(String msg) {
                       if((panelLines.get(i).getMultiply()-kPrintedInfolist.get(k).getQty())!=0){
                           //changed to save with server date
                           dlReceipts.insertPrintedKot(m_oTicket.getId(),m_oTicket.getTicketId(),panelLines.get(i).getProductID(), "N",(panelLines.get(i).getMultiply()-kPrintedInfolist.get(k).getQty()) ,kotTicket,m_oTicket.getPlaceId(),panelLines.get(i).getInstruction(),m_oTicket.getUser().getId());
+                          // dlReceipts.insertServedTransaction(m_oTicket,"ADD");
                         }
                       verify = true;
                       break;
@@ -5784,6 +5785,7 @@ private JPanel getLabelPanel(String msg) {
                   if(verify==false){
                       //changed to save with server date
                       dlReceipts.insertPrintedKot(m_oTicket.getId(),m_oTicket.getTicketId(),panelLines.get(i).getProductID(), "N", panelLines.get(i).getMultiply(),kotTicket,m_oTicket.getPlaceId(),panelLines.get(i).getInstruction(),m_oTicket.getUser().getId());
+                      // dlReceipts.insertServedTransaction(m_oTicket,"ADD");
                   }
               }
                try {

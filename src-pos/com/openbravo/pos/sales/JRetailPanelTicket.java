@@ -163,6 +163,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
     private final static int NUMBER_PORINT = 6;
     private final static int NUMBER_PORDEC = 7;
     private final static int NUMBER_TEST = 100;
+    public int flag=0;
     protected JRetailTicketLines m_ticketlines;
     private TicketParser m_TTP;
     public JPrincipalApp m_principalapp = null;
@@ -305,7 +306,9 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
     private static DateFormat m_dateformattime = new SimpleDateFormat("HH:mm:ss");
     Map<String, String> userMap = new HashMap<String, String>();
     Date dbUpdatedDate = null;
-
+    public int oldordernum;
+        public int newordernum;
+        public String loginUserId;
     /**
      * Creates new form JTicketView
      */
@@ -1798,6 +1801,8 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
 //
 //        }
         String role = m_App.getAppUserView().getUser().getRole();
+        loginUserId=m_App.getAppUserView().getUser().getId();
+        System.out.println("LoginpeopleId /userId/serveuserId"+loginUserId);
         try {
             roleName = dlReceipts.getRoleByUser(role);
         } catch (BasicException ex) {
@@ -2714,7 +2719,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
         if (executeEventAndRefresh("ticket.setline", new ScriptArg("index", index), new ScriptArg("line", oLine)) == null) {
             m_oTicket.setLine(index, oLine);
              System.out.println("oLine---mutiplyqty" + oLine.getMultiply()+m_oTicket.getPlaceId());
-               dlReceipts.updateServedTransactionModify(m_oTicket,oLine.getTbl_orderId());
+
             m_ticketlines.setTicketLine(index, oLine);
             m_ticketlines.setSelectedIndex(index);
             visorTicketLine(oLine); // Y al visor tambien...
@@ -5632,7 +5637,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                         .add(m_jEraser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(m_jBtnKot, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 29, Short.MAX_VALUE)
                 .add(m_jCalculatePromotion, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -5933,7 +5938,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
         if (i < 0) {
             Toolkit.getDefaultToolkit().beep(); // No hay ninguna seleccionada
         } else {
-             dlReceipts.updateServedTransactionCancel(m_oTicket,m_oTicket.getLine(i).getTbl_orderId());
+
             String selectedProduct = m_oTicket.getLine(i).getProductID();
             int kotStatus = m_oTicket.getLine(i).getIsKot();
             String addonVal = m_oTicket.getLine(i).getAddonId();
@@ -5944,6 +5949,8 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                 logger.info("Its  kot item");
                 if (roleName.equals("Admin") || roleName.equals("Cashier")) {
                     boolean billUpdated = JReasonEditor.showMessage(this, dlReceipts, m_oTicket, selectedProduct, i, "lineDelete");
+                    System.out.println("After cancelok billupdates reason editor"+billUpdated);
+                   // dlReceipts.updateServedTransactionCancel(m_oTicket,m_oTicket.getLine(i).getTbl_orderId());
                     try {
                         if (billUpdated) {
                             // showMessage(this, "The Table is being accessed by another User!Try after sometime");
@@ -5953,7 +5960,7 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                             } catch (BasicException ex) {
                                 logger.info("Exception while selecting the dbticket on cancel item action ");
                                 Logger.getLogger(JRetailPanelTicket.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            }//end billupdated is true
                             if (dbticket != null) {
                                 //  String dbUpdated = dlReceipts.getUpdatedTime(m_oTicket.getPlaceId(), m_oTicket.getSplitSharedId());
                                 // dbUpdatedDate = DateFormats.StringToDateTime(dbUpdated);
@@ -5978,8 +5985,12 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                         } else {
                             if (JReasonEditor.getCancel() == true) {
                                 kotlogger.info("KOT cancelled Successfully " + "," + "Username: " + m_oTicket.printUser() + "," + "Kot No: " + m_oTicket.getLine(i).getKotid() + "," + "Table: " + m_oTicketExt.toString() + "," + "Order No: " + m_oTicket.getOrderId() + "," + "Product Name: " + m_oTicket.getLine(i).getProductName() + "," + "Qty: " + m_oTicket.getLine(i).getMultiply() + "," + "Timestamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
-                              
+
+                              System.out.println("Under X-Cancel"+m_oTicket.getLine(i).getTbl_orderId());
+                              dlReceipts.updateServedTransactionCancel(m_oTicket,m_oTicket.getLine(i).getTbl_orderId());
+
                                 removeTicketLine(i);
+                               // dlReceipts.updateServedTransactionCancel(m_oTicket,m_oTicket.getLine(i).getTbl_orderId());
                                 //adding the logic of deleting the addon items
                                 if (addonVal != null && primaryAddon == 1 || (addonVal != null && comboAddon == 1)) {
                                     int j = 0;
@@ -6134,7 +6145,10 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                         if (JReasonEditor.getCancel() == true) {
                             newline.setMultiply(newline.getMultiply() - 1.0);
                             double qty=newline.getMultiply();
-                             
+
+                            System.out.println("qty"+qty);
+                             dlReceipts.updateServedTransactionMinus(m_oTicket,newline.getTbl_orderId(),newline.getMultiply());
+
                             kotlogger.info("KOT cancelled Successfully one qty " + "," + "Username: " + m_oTicket.printUser() + "," 
                                     + "Kot No: " + m_oTicket.getLine(i).getKotid() + "," + "Table: " + m_oTicketExt.toString() + "," 
                                     + "Order No: "+ m_oTicket.getOrderId() + "," + "Product Name: " + m_oTicket.getLine(i).getProductName() + ","
@@ -6492,6 +6506,9 @@ public abstract class JRetailPanelTicket extends JPanel implements JPanelView, B
                 if (m_oTicket.getLinesCount() != 0) {
                     orderId = dlSales.getNextTicketOrderNumber();
                     m_oTicket.setOrderId(orderId);
+                    
+                    
+                    //Need to perform updation for new KDS here
                 }
             }
 
@@ -6545,6 +6562,7 @@ System.out.println("onkotpunch");
 
     private synchronized void printRetailKotTicket(String sresourcename, RetailTicketInfo ticket, java.util.List<RetailTicketLineInfo> kot, 
             Object ticketExt, java.util.List<ProductionPrinterInfo> printerInfo, int kotTicket) {
+
         java.util.List<TicketLineConstructor> allLines = null;
         logger.info("start printing the kot" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
         com.openbravo.pos.printer.printer.KotImagePrinter printer = new KotImagePrinter();
@@ -6569,6 +6587,7 @@ System.out.println("onkotpunch");
             //  System.out.println("unique---"+uniqueProductionAreas.get(j).printName());
             //System.out.println("uniqueProductionAreas:"+uniqueProductionAreas.size());
             if (uniqueProductionAreas.size() != 0) {
+                
                 allLines = getRetailAllLines(ticket, ticketExt, uniqueProductionAreas, kotTicket);
                 try {
                     printer.printKot(allLines, printerInfo.get(j).getPath());
@@ -6586,9 +6605,26 @@ System.out.println("onkotpunch");
                                 uniqueProductionAreas.get(i).getKotid(), "N", "", "", m_oTicket.getPlaceId(), m_oTicket.getUser().getId(),
                                 m_oTicket.getOrderId());
                                              //dlReceipts.insertservedhistory(m_oTicket);
-                         dlReceipts.insertServedTransaction(m_oTicket,"ADD",roleName);
 
+                       // System.out.println("Before Insert 11 -kot "+i);
                         
+                        //System.out.println("rolename:"+roleName);
+                        String txstatus="ADD";
+                        String tableid_unique=uniqueProductionAreas.get(i).getTbl_orderId();
+                        dlReceipts.insertServedTransaction(m_oTicket,txstatus,tableid_unique);
+                        
+      /*
+       Object[] values = new Object[] { UUID.randomUUID().toString(),m_oTicket.getOrderId(),m_oTicket.getPlaceId(),uniqueProductionAreas.get(i).getTbl_orderId(),txstatus,uniqueProductionAreas.get(i).getKotid(),uniqueProductionAreas.get(i).getDuplicateProductName(),uniqueProductionAreas.get(i).getMultiply(),uniqueProductionAreas.get(i).getPreparationTime(),uniqueProductionAreas.get(i).getKotdate(),uniqueProductionAreas.get(i).getKdsPrepareStatus(),uniqueProductionAreas.get(i).getInstruction(),uniqueProductionAreas.get(i).getAddonId(),uniqueProductionAreas.get(i).getPrimaryAddon(),uniqueProductionAreas.get(i).getProductionAreaType(),uniqueProductionAreas.get(i).getStation(),uniqueProductionAreas.get(i).getPreparationStatus(),uniqueProductionAreas.get(i).getServedBy(),uniqueProductionAreas.get(i).getServedTime(),0};
+      Datas[] datas = new Datas[] { Datas.STRING,Datas.INT,Datas.STRING,Datas.STRING,Datas.STRING,Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.TIMESTAMP, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING,Datas.TIMESTAMP,Datas.INT};
+    try { 
+        new PreparedSentence(m_App.getSession(), "INSERT INTO SERVEDTRANSACTION (ID,ORDERNUM,TABLEID,ORDERITEM_ID,TXSTATUS,KOTID,PRODUCTNAME,MULTIPLY,PREPARATIONTIME,KOTDATE,KDSPREPARESTATUS,INSTRUCTION,ADDONID,PRIMARYADDON,PRODUCTIONAREATYPE,STATION,PREPARATIONSTATUS,SERVEDBY,SERVEDTIME,UPDATED,ISKDS) VALUES (?,?,?,?,'ADD',?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,18,19})).exec(values);
+                
+            } catch (BasicException ex) {
+                ex.printStackTrace();
+            }
+            */
+                                     
+   
                     }
 
                 } catch (PrinterException ex) {
@@ -6611,7 +6647,7 @@ System.out.println("onkotpunch");
                                                 System.out.println("INSIDE CATCH ");
 
                                           //  dlReceipts.insertservedhistory(m_oTicket);
-         dlReceipts.insertServedTransaction(m_oTicket,"ADD",roleName);
+
                     }
                     kotaction = 1;
                     showMessage(this, "KOT could not be sent to the Production Area. Please check the network connection.");
@@ -7158,7 +7194,11 @@ System.out.println("onkotpunch");
                 RetailTicketLineInfo copyline= new RetailTicketLineInfo();
                 lcopy=copyline.copyTicketLine();
                 
+
+                //System.out.println("lcopy from mjbuttonserved"+copyline.getServedTime());
+
                 System.out.println("lcopy from mjbuttonserved");
+
                 
                 if (m_oTicket.getLine(i).getPreparationStatus() != 3) {
                     logger.info("if not served");
@@ -7174,12 +7214,19 @@ System.out.println("onkotpunch");
 
                         }
                         m_oTicket.getLine(i).setServedTime(servedDate);
+                        System.out.println("Before update call - Tableorder id"+copyline.getTbl_orderId());
+                        //Update servedTime in ServedTransaction Table
+                     // dlReceipts.updateServedTransactionTime(m_oTicket,m_oTicket.getLine(i).getTbl_orderId());
+                        System.out.println("ServedTime on punch"+m_oTicket.getLine(i).getServedTime()+"servedDate variable"+servedDate);
                         if (userMap.isEmpty()) {
                             populateUsers();
                         }
                         m_oTicket.getLine(i).setServedBy(m_oTicket.getUser().getId());
                         String servedName = dlReceipts.getServedName();
                         m_oTicket.getLine(i).setKdsPrepareStatus(servedName);
+                        System.out.println("servedName variable"+servedName+loginUserId);
+                         //Update servedTime and Served by  in ServedTransaction Table - code by B.keerthana
+                       // dlReceipts.updateServedTransactionTime(m_oTicket,m_oTicket.getLine(i).getTbl_orderId(),roleName);
                         m_oTicket.getLine(i).setTbl_orderId(m_oTicket.getLine(i).getTbl_orderId());
                         setServedStatus(1);
                         paintKotTicketLine(i, m_oTicket.getLine(i));// TODO add your handling code here:
@@ -7194,6 +7241,8 @@ System.out.println("onkotpunch");
                         }
                         String splitId = m_oTicket.getSplitSharedId();
                         record = (Object[]) new StaticSentence(m_App.getSession(), "SELECT UPDATED FROM SHAREDTICKETS WHERE ID = ? AND SPLITID='" + splitId + "'", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(m_oTicket.getPlaceId());
+                        //NewKDS March 2017
+                        dlReceipts.updateServedTransactionTime(m_oTicket,m_oTicket.getLine(i).getTbl_orderId(),loginUserId);
                         if (record != null) {
                             m_oTicket.setObjectUpdateDate(DateFormats.StringToDateTime((String) record[0]));
 
@@ -7393,6 +7442,10 @@ jComboBox1.setPreferredSize(new Dimension(50,100));
             logger.info("Order NO." + m_oTicket.getOrderId() + "exception in setKotAndServedOnSplit" + ex.getMessage());
             Logger.getLogger(JRetailPanelTicket.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //NewKds to be added to change orderid on split bill
+        System.out.println("OldOrderNum"+ m_oTicket.getOrderId()+"TableName"+splitTicket.getTableName()+"TableId"+splitTicket.getPlaceId()+"New orderId"+orderId);
+       oldordernum=m_oTicket.getOrderId();
+       newordernum=orderId;
         splitTicket.setOrderId(orderId);
 
         int numlines = splitTicket.getLinesCount();
@@ -7406,8 +7459,12 @@ jComboBox1.setPreferredSize(new Dimension(50,100));
             } else {
                 servedStatus = 1;
             }
+            //NewKds to be added to change orderitemid on split bill
+               System.out.println("old OrderItem Id"+splitTicket.getLine(i).getTbl_orderId()+"New orderItemId"+tbl_orderitemId);
+                System.out.println("kot id "+splitTicket.getLine(i).getKotid());
+                dlReceipts.updateServedTransactionSplit(m_oTicket,m_oTicket.getPlaceId(),splitTicket.getLine(i).getTbl_orderId(),tbl_orderitemId,oldordernum,newordernum);
             splitTicket.getLine(i).setTbl_orderId(tbl_orderitemId);
-        }
+        }//end for
 
 
     }

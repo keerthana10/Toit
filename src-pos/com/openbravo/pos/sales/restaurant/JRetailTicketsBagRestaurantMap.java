@@ -51,7 +51,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     private static String tableId;
     private static String newTableId;
     private static String newTableName;
-    public String old_table_id;
+
 //    private static final Icon ICO_OCU = new ImageIcon(JTicketsBag.class.getResource("/com/openbravo/images/edit_group.png"));
 //    private static final Icon ICO_FRE = new NullIcon(22, 22);
     private java.util.List<Place> m_aplaces;
@@ -62,7 +62,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     // State vars
     private Place m_PlaceClipboard;
     private CustomerInfo customer;
-    private DataLogicReceipts dlReceipts = null;
+    public DataLogicReceipts dlReceipts = null;
     private DataLogicSales dlSales = null;
     private DataLogicSystem dlSystem = null;
     private AppView m_app;
@@ -80,6 +80,8 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     private static DateFormat m_dateformat = new SimpleDateFormat("yyyy-MM-dd");
     private static DateFormat m_dateformattime = new SimpleDateFormat("HH:mm:ss");
     private static String splitId;
+     public String oldtableId;
+      public String movetableId;
 
     /**
      * Creates new form JTicketsBagRestaurant
@@ -1375,8 +1377,10 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                                     dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticketclip);
                                    // dlReceipts.deleteTakeawayTicket(m_PlaceClipboard.getId());
                                     System.out.println("deleting previous table id:"+m_PlaceClipboard.getId());
-                                     old_table_id=m_PlaceClipboard.getId();
-                                      //System.out.println("deleting previous table id:"+old_table_id);
+
+                                     oldtableId=m_PlaceClipboard.getId();
+                                      //System.out.println("deleting previous table id:"+oldTableId);
+
                                 }
                                 m_PlaceClipboard.setPeople(false);
                                 setNewTableName(m_place.getName());
@@ -1392,10 +1396,13 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
 
                             // No hace falta preguntar si estaba bloqueado porque ya lo estaba antes
                             // activamos el ticket seleccionado
-                             System.out.println("Before setactive place in Jretailticketbagresta..map55"+"\n old Id ref"+ old_table_id);
-                            System.out.println("Before setactive place in Jretailticketbagresta..map55"+"\n new Id ref"+ ticketclip.getPlaceId());
+
+                             System.out.println("Before setactive place in Jretailticketbagresta..map55"+"\n old Id ref"+ oldtableId);
+                            System.out.println("After setactive place in Jretailticketbagresta..map55"+"\n new Id ref"+ ticketclip.getPlaceId());
+                            movetableId=ticketclip.getPlaceId();
                             try{
-                            dlReceipts.updateServedTransactionMoveAsModify(old_table_id,"Modify");
+                            dlReceipts.updateServedTransactionMoveAsModify(ticketclip,movetableId,oldtableId,"MODIFY");
+
                             }catch (BasicException e) {
                                 logger.info("actionPerformed in map class exception 10 " + e.getMessage());
                                 new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this); // Glup. But It was empty.
