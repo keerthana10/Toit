@@ -48,6 +48,7 @@ import java.util.logging.Logger;
  * @author adrianromero
  */
 public class DataLogicReceipts extends BeanFactoryDataSingle {
+
     
     
 
@@ -551,9 +552,11 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
 
     public String getRoleByUser(String id) throws BasicException {
 
+
         Object[] record = null;
 
         record = (Object[]) new StaticSentence(s, "select name from roles where id=?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(id);
+
 
         return record == null ? "" : (String) record[0];
     }
@@ -984,5 +987,6 @@ new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET ORDERNUM = ?,ORDERITEM_ID 
             return record == null ? "" : record[0].toString();
         }
     }
+
 
 }//end class
