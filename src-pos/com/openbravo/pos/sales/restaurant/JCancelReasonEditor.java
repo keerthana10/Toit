@@ -309,14 +309,18 @@ class JCancelReasonEditor extends JDialog {
                        } catch (BasicException ex) {
                            Logger.getLogger(JCancelReasonEditor.class.getName()).log(Level.SEVERE, null, ex);
                        }
-
-
+//New KDS MARCH 16 ,2017
+                       System.out.println("OrderNum"+tinfoLocal.getPlaceId()+tinfoLocal.getOrderId()); 
+localDlReceipts.updateServedTransactionCancelKotBill(tinfoLocal,tinfoLocal.getPlaceId(),tinfoLocal.getOrderId());
+System.out.println("OrderNum"+tinfoLocal.getPlaceId()+tinfoLocal.getOrderId());
                        for(int i=0;i<tinfoLocal.getLinesCount();i++){
                            //changed to save with server date
                            System.out.println("From JcancelReasonEditor");
                            localDlReceipts.insertCancelledKot(tinfoLocal.getId(),tinfoLocal.getTicketId(),panelLines.get(i).getProductID(), "Y",
                                       (1*panelLines.get(i).getMultiply()) ,panelLines.get(i).getKotid(),"Y",reason,reasonId,tinfoLocal.getPlaceId(),
                                       tinfoLocal.getUser().getId(),tinfoLocal.getOrderId());
+                           
+                      
                        }
                         try {
                            kotTicketlist = localDlReceipts.getKot(tinfoLocal.getId());
