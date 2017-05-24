@@ -49,11 +49,8 @@ import java.util.logging.Logger;
  */
 public class DataLogicReceipts extends BeanFactoryDataSingle {
 
-    
-    
-
     private Session s;
-    private String moveTxstatus="Default";
+    private String moveTxstatus = "Default";
 
     /**
      * Creates a new instance of DataLogicReceipts
@@ -91,49 +88,30 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
     }
 
     public final void updateSharedTicket(final String id, final TicketInfo ticket) throws BasicException {
-        System.out.println("update in sharedtickets1");
+
         Object[] values = new Object[]{id, ticket.getName(), ticket};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE};
         new PreparedSentence(s, "UPDATE SHAREDTICKETS SET NAME = ?, CONTENT = ? WHERE ID = ?", new SerializerWriteBasicExt(datas, new int[]{1, 2, 0})).exec(values);
     }
 
     public final void updateSharedTicket(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("in updateSharedTicket method2" + ticket.isTicketOpen()+"--"+id);
-
+        System.out.println("in updateSharedTicket method" + ticket.isTicketOpen());
         Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
-        new PreparedSentence(s, "UPDATE SHAREDTICKETS SET NAME = ?, CONTENT = ?, ISPRINTED = ?, ISMODIFIED = ?,UPDATED=NOW(),ISKDS=?  WHERE ID = ? AND SPLITID=? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 4, 5, 6, 0, 3})).exec(values);
-    }
-
-    public final void updateSharedTicketTemp(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("in updateSharedTicket method3" +id+ticket.isTicketOpen());
-
-        Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
-        new PreparedSentence(s, "UPDATE SHAREDTICKETS SET ISPRINTED = ?, ISMODIFIED = ?,UPDATED=NOW(),ISKDS=?  WHERE ID = ? AND SPLITID=? ", new SerializerWriteBasicExt(datas, new int[]{4, 5, 6, 0, 3})).exec(values);
+        new PreparedSentence(s, "UPDATE SHAREDTICKETS SET NAME = ?, CONTENT = ?, ISPRINTED = ?, ISMODIFIED = ?, UPDATED=NOW() ,ISKDS=?  WHERE ID = ? AND SPLITID=? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 4, 5, 6, 0, 3})).exec(values);
     }
 
     public final void updateTakeawayTicket(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("in updateSharedTicket method4" +id+ ticket.isTicketOpen());
+        System.out.println("in updateSharedTicket method" + ticket.isTicketOpen());
         Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
         new PreparedSentence(s, "UPDATE TAKEAWAYTICKETS SET NAME = ?, CONTENT = ?, ISPRINTED = ?, ISMODIFIED = ?,UPDATED=NOW(),ISKDS=?  WHERE ID = ? AND SPLITID=? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 4, 5, 6, 0, 3})).exec(values);
     }
-    /*   public final void insertSharedTicketTemp(final String id, final TicketInfo ticket) throws BasicException {
-     System.out.println("insert in sharedticketstemp");
-     Object[] values = new Object[] {id, ticket.getName(), ticket};
-     Datas[] datas = new Datas[] {Datas.STRING, Datas.STRING, Datas.SERIALIZABLE};
-        
-     new PreparedSentence(s
-     , "INSERT INTO SHAREDTICKETSTEMP (ID, NAME,CONTENT) VALUES (?, ?, ?)"
-     , new SerializerWriteBasicExt(datas, new int[] {0, 1, 2})).exec(values);
-     }*/
 
     public final void insertSharedTicket(final String id, final TicketInfo ticket) throws BasicException {
-        System.out.println("insert in sharedtickets");
+
         Object[] values = new Object[]{id, ticket.getName(), ticket};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE};
-
         new PreparedSentence(s, "INSERT INTO SHAREDTICKETS (ID, NAME,CONTENT) VALUES (?, ?, ?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2})).exec(values);
     }
 
@@ -146,30 +124,14 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
     }
 
     public final void insertRetailSharedTicket(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("insert in sharedtickets");
         String splitId = UUID.randomUUID().toString().replaceAll("-", "");
         ticket.setSplitSharedId(splitId);
         Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isModified(), 0, ticket.getTakeaway()};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT, Datas.STRING};
 
         new PreparedSentence(s, "INSERT INTO SHAREDTICKETS (ID, NAME,CONTENT,SPLITID,ISPRINTED,ISMODIFIED,UPDATED,ISKDS,ISTAKEAWAY) VALUES (?, ?, ?,?,?,?,NOW(),?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7})).exec(values);
-
-
-
-
     }
 
-    /* public final void insertRetailSharedTicketTemp(final String id, final RetailTicketInfo ticket) throws BasicException {
-     System.out.println("insert in sharedtickets");
-     String splitId1= UUID.randomUUID().toString().replaceAll("-", "");
-     ticket.setSplitSharedId(splitId1);
-     Object[] values = new Object[] {id, ticket.getName(), ticket,ticket.getSplitSharedId(),ticket.isPrinted(),ticket.isModified(),0,ticket.getTakeaway()};
-     Datas[] datas = new Datas[] {Datas.STRING, Datas.STRING, Datas.SERIALIZABLE,Datas.STRING,Datas.BOOLEAN,Datas.BOOLEAN,Datas.INT,Datas.STRING};
-
-     new PreparedSentence(s
-     , "INSERT INTO SHAREDTICKETSTEMP (ID,SPLITID,ISPRINTED,ISMODIFIED,UPDATED,ISKDS,ISTAKEAWAY) VALUES (?,?,?,?,NOW(),?,?)"
-     , new SerializerWriteBasicExt(datas, new int[] {0,3,4,5,6,7})).exec(values);
-     }*/
     public final void insertRetailTakeawayTicket(final String id, final RetailTicketInfo ticket) throws BasicException {
 //         String splitId= UUID.randomUUID().toString().replaceAll("-", "");
 //         ticket.setSplitSharedId(splitId);
@@ -365,12 +327,11 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
     }
 
     public void insertRetailPrintedKot(String ticketid, int billNo, String productId, String isPrinted, double qty, int kotid, String isCancel, String reason, String reasonId, String tableId, String person, int orderNo) {
-        System.out.println("isPrinted 3" + isPrinted);
+
         Object[] values = new Object[]{UUID.randomUUID().toString(), ticketid, billNo, productId, isPrinted, qty, kotid, isCancel, reason, reasonId, tableId, person, orderNo};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.DOUBLE, Datas.INT, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT};
         try {
             new PreparedSentence(s, "INSERT INTO KOT (ID,TICKET,DATENEW,BILLNO, PRODUCTID,ISPRINTED, QTY, KOTID,ISCANCELLED,REASON,REASONID,TABLEID,PERSON,ORDERNUM) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ? ,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})).exec(values);
-
         } catch (BasicException ex) {
             Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -379,19 +340,7 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
     //changed to save with server date
 
     public void insertCancelledKot(String ticketid, int billNo, String productId, String isPrinted, double qty, int kotid, String isCancel, String reason, String reasonId, String tableId, String person, int orderNo) {
-        System.out.println("isPrinted 4" + isPrinted);
-        Object[] values = new Object[]{UUID.randomUUID().toString(), ticketid, billNo, productId, isPrinted, qty, kotid, isCancel, reason, reasonId, tableId, person, orderNo};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.DOUBLE, Datas.INT, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT};
-        try {
-            new PreparedSentence(s, "INSERT INTO KOT (ID,TICKET,DATENEW,BILLNO, PRODUCTID,ISPRINTED, QTY, KOTID,ISCANCELLED,REASON,REASONID,TABLEID,PERSON,ORDERNUM) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ? ,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})).exec(values);
-        } catch (BasicException ex) {
-            Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
-    }
-
-    public void insertItemPunchedKot(String ticketid, int billNo, String productId, String isPrinted, double qty, int kotid, String isCancel, String reason, String reasonId, String tableId, String person, int orderNo) {
-        System.out.println("isPrinted 5" + isPrinted);
         Object[] values = new Object[]{UUID.randomUUID().toString(), ticketid, billNo, productId, isPrinted, qty, kotid, isCancel, reason, reasonId, tableId, person, orderNo};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.DOUBLE, Datas.INT, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT};
         try {
@@ -469,8 +418,7 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
 //            }
 //
 //    }
-    public void insertTableOrderLines(String tblOrderId, String tokenId, String productId,
-            double qty, double price, int bLink, int preStatus, int active, Date orderDate) {
+    public void insertTableOrderLines(String tblOrderId, String tokenId, String productId, double qty, double price, int bLink, int preStatus, int active, Date orderDate) {
 
         Object[] values = new Object[]{tblOrderId, tokenId, productId, qty, price, bLink, preStatus, active, orderDate};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.DOUBLE, Datas.DOUBLE, Datas.INT, Datas.INT, Datas.INT, Datas.TIMESTAMP};
@@ -552,11 +500,9 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
 
     public String getRoleByUser(String id) throws BasicException {
 
-
         Object[] record = null;
 
         record = (Object[]) new StaticSentence(s, "select name from roles where id=?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(id);
-
 
         return record == null ? "" : (String) record[0];
     }
@@ -791,202 +737,218 @@ public class DataLogicReceipts extends BeanFactoryDataSingle {
 
     }
 
- 
+    //New KDS functions Added on 7-03-17
+    public void insertServedTransaction(RetailTicketInfo m_oTicket, String txstatus, String uniq_tableid) {
+        String uniqtableid = uniq_tableid;
 
-
-    
-    public void insertServedTransaction(RetailTicketInfo m_oTicket,String txstatus,String uniq_tableid) {
-        String uniqtableid=uniq_tableid;
-      
-        int begin=0;
-        System.out.println("uniq table id"+uniq_tableid);
+        int begin = 0;
+        System.out.println("uniq table id" + uniq_tableid);
         for (RetailTicketLineInfo l : m_oTicket.getLines()) {
-             
-             begin++;
-             if(l.getTbl_orderId().equals(uniqtableid))            
-             {
-                 System.out.println("id" + begin+" check from insertserved txn"+uniqtableid);
-             
-        
-      Object[] values = new Object[] { UUID.randomUUID().toString(),m_oTicket.getOrderId(),m_oTicket.getPlaceId(),l.getTbl_orderId(),txstatus,l.getKotid(),l.getDuplicateProductName(),l.getMultiply(),l.getPreparationTime(),l.getKotdate(),l.getKdsPrepareStatus(),l.getInstruction(),l.getAddonId(),l.getPrimaryAddon(),l.getProductionAreaType(),l.getStation(),l.getPreparationStatus(),l.getServedBy(),l.getServedTime(),0};
-      Datas[] datas = new Datas[] { Datas.STRING,Datas.INT,Datas.STRING,Datas.STRING,Datas.STRING,Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.TIMESTAMP, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING,Datas.TIMESTAMP,Datas.INT};
 
-            
-            try { 
-     new PreparedSentence(s, "INSERT INTO SERVEDTRANSACTION (ID,ORDERNUM,TABLEID,ORDERITEM_ID,TXSTATUS,KOTID,PRODUCTNAME,MULTIPLY,PREPARATIONTIME,KOTDATE,KDSPREPARESTATUS,INSTRUCTION,ADDONID,PRIMARYADDON,PRODUCTIONAREATYPE,STATION,PREPARATIONSTATUS,SERVEDBY,SERVEDTIME,UPDATED,ISKDS) VALUES (?,?,?,?,'ADD',?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?)",new SerializerWriteBasicExt(datas, new int[]{ 0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,18,19})).exec(values);
+            begin++;
+            if (l.getTbl_orderId().equals(uniqtableid)) {
+                System.out.println("id" + begin + " check from insertserved txn" + uniqtableid);
 
-            } catch (BasicException ex) {
-                ex.printStackTrace();
-                //Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }//end catch
+
+                Object[] values = new Object[]{UUID.randomUUID().toString(), m_oTicket.getOrderId(), m_oTicket.getPlaceId(), l.getTbl_orderId(), txstatus, l.getKotid(), l.getDuplicateProductName(), l.getMultiply(), l.getPreparationTime(), l.getKdsPrepareStatus(), l.getInstruction(), l.getAddonId(), l.getPrimaryAddon(), l.getProductionAreaType(), l.getStation(), l.getPreparationStatus(), l.getServedBy(), l.getServedTime(), 0};
+                Datas[] datas = new Datas[]{Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.TIMESTAMP, Datas.INT};
+
+
+                try {
+                    new PreparedSentence(s, "INSERT INTO SERVEDTRANSACTION (ID,ORDERNUM,TABLEID,ORDERITEM_ID,TXSTATUS,KOTID,PRODUCTNAME,MULTIPLY,PREPARATIONTIME,KOTDATE,KDSPREPARESTATUS,INSTRUCTION,ADDONID,PRIMARYADDON,PRODUCTIONAREATYPE,STATION,PREPARATIONSTATUS,SERVEDBY,SERVEDTIME,UPDATED,ISKDS) VALUES (?,?,?,?,'ADD',?,?,?,?,NOW(),?,?,?,?,?,?,?,?,?,NOW(),?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18})).exec(values);
+
+                } catch (BasicException ex) {
+                    ex.printStackTrace();
+                    //Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+                }//end catch
             }//end if
         }//end for
-      
+
     }//end fn.
- 
-     
- /*public final int deleteFromServedtransaction(final int id,final String prod_name){
-      int kot_result=0;
-try { 
-    //String deleteSQL = "\"DELETE FROM SERVEDTRANSACTION WHERE KOTID = ? AND PRODUCTNAME = ?";
-//PreparedStatement preparedStatement = dbConnection.prepareStatement(deleteSQL);
-     kot_result =   new StaticSentence(s, "DELETE FROM SERVEDTRANSACTION WHERE KOTID = ? AND PRODUCTNAME ='"+prod_name+"'"
-             , SerializerWriteString.INSTANCE).exec(id);
-        System.out.println("Deleting....servedtxn"+kot_result);
-       
-                }catch (BasicException ex) {
-                ex.printStackTrace();
-                //Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }
- return kot_result;
- }
- */
-    
+
     public int getOrderNumberForMove(String id) throws BasicException {
         Object[] record = null;
         record = (Object[]) new StaticSentence(s, "SELECT ORDERNUM FROM SERVEDTRANSACTION WHERE TABLEID = '" + id + "'", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find();
         int i = Integer.parseInt(record[0] == null ? "0" : record[0].toString());
         return (i == 0 ? 0 : i);
     }
-  
-    
- public String getServedTxstatusBeforeMove(String id) throws BasicException {
+
+    public String getServedTxstatusBeforeMove(String id) throws BasicException {
         Object[] record = (Object[]) new StaticSentence(s, "SELECT TXSTATUS FROM SERVEDTRANSACTION WHERE TABLEID = '" + id + "'", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find();
         return record == null ? "" : record[0].toString();
 
     }
-public void setmoveTxstatus(String TxStatus) {
+
+    public void setmoveTxstatus(String TxStatus) {
         this.moveTxstatus = TxStatus;
     }
 
-public final void updateServedTransactionMoveOrderId(int ordernum,String moveid)
-        {
-              System.out.println("update in MoveSorderid"+ordernum+"moveid"+moveid);
-Object[] values = new Object[]{moveid,ordernum};
+    public final void updateServedTransactionMoveOrderId(int ordernum, String moveid) {
+        System.out.println("update in MoveSorderid" + ordernum + "moveid" + moveid);
+        Object[] values = new Object[]{moveid, ordernum};
 
         Datas[] datas = new Datas[]{Datas.STRING, Datas.INT};
-        try {  
-        new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET UPDATED=NOW(),TABLEID = ? WHERE ORDERNUM = ?", new SerializerWriteBasicExt(datas, new int[]{0,1})).exec(values);
-    }catch (BasicException ex) {
-                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }  
+        try {
+            new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET UPDATED=NOW(),TABLEID = ? WHERE ORDERNUM = ?", new SerializerWriteBasicExt(datas, new int[]{0, 1})).exec(values);
+        } catch (BasicException ex) {
+            Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
-     public final void updateServedTransactionMoveAsModify(RetailTicketInfo ticketclip,final String moveid,final String oldid,final String  mod) throws BasicException {
-        System.out.println("update in MoveServed Transaction--tableId is "+oldid+"moveid"+moveid);
-        
-             int ordernum=getOrderNumberForMove(oldid);
-             System.out.println("ordernumber"+ordernum);
-              updateServedTransactionMoveOrderId(ordernum,moveid);
-            
-         
-              
+    public final void updateServedTransactionMoveAsModify(RetailTicketInfo ticketclip, final String moveid, final String oldid, final String mod) throws BasicException {
+        System.out.println("update in MoveServed Transaction--tableId is " + oldid + "moveid" + moveid);
+
+        int ordernum = getOrderNumberForMove(oldid);
+        System.out.println("ordernumber" + ordernum);
+        updateServedTransactionMoveOrderId(ordernum, moveid);
+
+
+
         Object[] values = new Object[]{moveid, mod};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING};
-        try {  
-        new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET TXSTATUS = ?,UPDATED=NOW() WHERE TABLEID = ? AND TxSTATUS= 'ADD' ", new SerializerWriteBasicExt(datas, new int[]{1,0})).exec(values);
-    }catch (BasicException ex) {
-                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-           //}//end if
-     }
-
-     
-     
- public void updateServedTransactionMinus(RetailTicketInfo m_oTicket,final String id,double qty) {
-
-        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {     
-            if(id == newline.getTbl_orderId()){
-  System.out.println("UPDATING TABLE for minus : "+m_oTicket.getPlaceId()+"orderitemid"+newline.getTbl_orderId()+"..."+newline.getMultiply()+"date:::"+newline.getKotdate());
-  
-Object[] values = new Object[]{qty,newline.getKotdate(),newline.getTbl_orderId()};
-Datas[] datas = new Datas[]{Datas.DOUBLE,Datas.TIMESTAMP,Datas.STRING};
-    try {        
-new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET MULTIPLY = ?,KOTDATE = ?,TXSTATUS = 'MODIFY',UPDATED=NOW() WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2})).exec(values);
+        try {
+            new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET TXSTATUS = ?,UPDATED=NOW() WHERE TABLEID = ? AND TxSTATUS= 'ADD' ", new SerializerWriteBasicExt(datas, new int[]{1, 0})).exec(values);
         } catch (BasicException ex) {
-                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-           
+            Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //}//end if
+    }
+
+    public void updateServedTransactionMinus(RetailTicketInfo m_oTicket, final String id, double qty) {
+
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {
+            if (id == newline.getTbl_orderId()) {
+                System.out.println("UPDATING TABLE for minus : " + m_oTicket.getPlaceId() + newline.getTbl_orderId() + "..." + newline.getMultiply() + "date:::" + newline.getKotdate());
+                Object[] values = new Object[]{qty, newline.getKotdate(), newline.getTbl_orderId()};
+                Datas[] datas = new Datas[]{Datas.DOUBLE, Datas.TIMESTAMP, Datas.STRING};
+                try {
+                    new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET MULTIPLY = ?,KOTDATE = ?,TXSTATUS = 'MODIFY',UPDATED=NOW() WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2})).exec(values);
+                } catch (BasicException ex) {
+                    Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
         }
     }
- }
+    
+       public void updateServedTransactionMinusAddOn(RetailTicketInfo m_oTicket, final String id, double qty) {
+       System.out.println("updateServedTransactionMinusAddOn");
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {
+            //if (id == newline.getTbl_orderId()) {
+                System.out.println("UPDATING TABLE for minus222222 : " + m_oTicket.getPlaceId() + newline.getAddonId() + "..." + newline.getMultiply() + "date:::" + newline.getKotdate());
+                 System.out.println("newline.getAddonId() : "+newline.getAddonId());
+                Object[] values = new Object[]{qty, newline.getKotdate(), newline.getAddonId()};
+                Datas[] datas = new Datas[]{Datas.DOUBLE, Datas.TIMESTAMP, Datas.STRING};
+                try {
+                    new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET MULTIPLY = ?,KOTDATE = ?,TXSTATUS = 'CANCEL', UPDATED=NOW() WHERE ADDONID=?  AND PRIMARYADDON=0", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2})).exec(values);
+                } catch (BasicException ex) {
+                    Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
- public void updateServedTransactionCancel(RetailTicketInfo m_oTicket,final String id) {
+           // }
+        }
+    }
 
-        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {   
-            if(id == newline.getTbl_orderId()){
-  System.out.println("UPDATING TABLE for cancel X :passed id "+id+"placeid"+m_oTicket.getPlaceId()+"orderitemid"+newline.getTbl_orderId()+"..."+newline.getMultiply()+"date:::"+newline.getKotdate());
-//Object[] values = new Object[]{l.getTbl_orderId(),m_oTicket.getPlaceId(),l.getKotid(), l.getDuplicateProductName(), l.getMultiply(), l.getPreparationTime(), l.getKotdate(), l.getKdsPrepareStatus(), l.getInstruction(), l.getAddonId(), l.getPrimaryAddon(), l.getProductionArea(), l.getStation(), l.getPreparationStatus(), l.getServedBy(), l.getServedTime()};
-            //Datas[] datas = new Datas[]{Datas.STRING,Datas.STRING,Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.TIMESTAMP, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.TIMESTAMP};
-Object[] values = new Object[]{newline.getKotdate(),newline.getTbl_orderId()};
-Datas[] datas = new Datas[]{Datas.TIMESTAMP,Datas.STRING};
-    try {        
-new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET KOTDATE = ?,TXSTATUS = 'CANCEL',UPDATED=NOW() WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1})).exec(values);
-        } catch (BasicException ex) {
-                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-           
+    public void updateServedTransactionCancel(RetailTicketInfo m_oTicket, final String id) {
+
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {
+            if (id == newline.getTbl_orderId()) {
+                System.out.println("UPDATING TABLE for cancel X : " + m_oTicket.getPlaceId() +"   order ID : "+  newline.getTbl_orderId() + "..." + newline.getMultiply() + "date:::" + newline.getKotdate());
+
+                Object[] values = new Object[]{newline.getKotdate(), newline.getTbl_orderId()};
+                Datas[] datas = new Datas[]{Datas.TIMESTAMP, Datas.STRING};
+                try {
+                  new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET KOTDATE = ?,TXSTATUS = 'CANCEL',UPDATED=NOW() WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1})).exec(values);
+                } catch (BasicException ex) {
+                    Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
         }
+
+    }
+    
+        public void updateServedTransactionCancelAddOn(RetailTicketInfo m_oTicket, final String id) {
+
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {
+          //  if (id == newline.getTbl_orderId()) {
+                System.out.println("UPDATING TABLE for cancel X : " + m_oTicket.getPlaceId() +"   ADDON ID : "+newline.getAddonId() + "..." + newline.getMultiply() + "date:::" + newline.getKotdate());
+
+                Object[] values = new Object[]{newline.getKotdate(), newline.getAddonId()};
+                Datas[] datas = new Datas[]{Datas.TIMESTAMP, Datas.STRING};
+                try {
+                  new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET KOTDATE = ?,TXSTATUS = 'CANCEL',UPDATED=NOW() WHERE ADDONID=? AND PRIMARYADDON=0 ", new SerializerWriteBasicExt(datas, new int[]{0, 1})).exec(values);
+                } catch (BasicException ex) {
+                    Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+           // }
         }
+
+    }
+
+    public void updateServedTransactionTime(RetailTicketInfo m_oTicket, final String id, String role) {
+        String rolename = role;
+
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {
+            if (id == newline.getTbl_orderId()) {
+                System.out.println("UPDATING TABLE for ServedTime : " + m_oTicket.getPlaceId() + newline.getTbl_orderId() + "..." + newline.getMultiply() + "date:::" + newline.getServedBy() +"Status: "+newline.getKdsPrepareStatus());
+             
+                Object[] values = new Object[]{rolename, newline.getKdsPrepareStatus(), newline.getServedTime(), newline.getTbl_orderId()};
+                Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.TIMESTAMP, Datas.STRING};
+                try {
+                    new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET UPDATED= NOW(),SERVEDBY = ?,KDSPREPARESTATUS = ?,SERVEDTIME = ? WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3})).exec(values);
+                } catch (BasicException ex) {
+                    Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
         
-    }
-  
-public void updateServedTransactionTime(RetailTicketInfo m_oTicket,final String id,String role) {
-    String rolename=role;
+        }
 
-        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {   
-            if(id == newline.getTbl_orderId()){
-  System.out.println("UPDATING TABLE for ServedTime : table id"+m_oTicket.getPlaceId()+"orderitemid"+newline.getTbl_orderId()+"..."+newline.getMultiply()+"date:::"+newline.getServedBy());
-//Object[] values = new Object[]{l.getTbl_orderId(),m_oTicket.getPlaceId(),l.getKotid(), l.getDuplicateProductName(), l.getMultiply(), l.getPreparationTime(), l.getKotdate(), l.getKdsPrepareStatus(), l.getInstruction(), l.getAddonId(), l.getPrimaryAddon(), l.getProductionArea(), l.getStation(), l.getPreparationStatus(), l.getServedBy(), l.getServedTime()};
-            //Datas[] datas = new Datas[]{Datas.STRING,Datas.STRING,Datas.INT, Datas.STRING, Datas.DOUBLE, Datas.STRING, Datas.TIMESTAMP, Datas.STRING, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING, Datas.TIMESTAMP};
-Object[] values = new Object[]{rolename,newline.getKdsPrepareStatus(),newline.getServedTime(),newline.getTbl_orderId()};
-Datas[] datas = new Datas[]{Datas.STRING,Datas.STRING,Datas.TIMESTAMP,Datas.STRING};
-    try {        
-new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET UPDATED=NOW(),SERVEDBY = ?,KDSPREPARESTATUS = ?,SERVEDTIME = ? WHERE ORDERITEM_ID=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2 ,3})).exec(values);
+    }
+
+    public void updateServedTransactionSplit(RetailTicketInfo m_oTicket, final String placeid, final String oldorderitemid, final String neworderitemid, int oldorderno, int neworderno) {
+
+        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {
+            if (oldorderitemid == newline.getTbl_orderId()) {
+                System.out.println("UPDATING TABLE for Split : " + m_oTicket.getPlaceId() + "orderitemid" + newline.getTbl_orderId() + "..." + newline.getMultiply() + "date:::" + newline.getKotdate());
+
+                Object[] values = new Object[]{neworderno, neworderitemid, placeid, oldorderno, oldorderitemid};
+                Datas[] datas = new Datas[]{Datas.INT, Datas.STRING, Datas.STRING, Datas.INT, Datas.STRING};
+                try {
+                    new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET ORDERNUM = ?,ORDERITEM_ID = ?,UPDATED=NOW(),TXSTATUS = 'MODIFY'  WHERE TABLEID=? AND ORDERNUM = ? AND ORDERITEM_ID = ?", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4})).exec(values);
+                } catch (BasicException ex) {
+                    Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
+    }
+
+    public void updateServedTransactionCancelKotBill(RetailTicketInfo m_oTicket, final String orderId, final int ordernum) {
+
+
+        Object[] values = new Object[]{ordernum, orderId};
+        Datas[] datas = new Datas[]{Datas.INT, Datas.STRING};
+        try {
+            new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET TXSTATUS = 'CANCEL',UPDATED=NOW() WHERE ORDERNUM = ? AND TABLEID = ?", new SerializerWriteBasicExt(datas, new int[]{0, 1})).exec(values);
         } catch (BasicException ex) {
-                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-           
-        }
-        }
-        
-    }
-
-/* public final void updateSharedTicketTemp(final String id, final RetailTicketInfo ticket) throws BasicException {
-        System.out.println("in updateSharedTicket method" + ticket.isTicketOpen());
-
-        Object[] values = new Object[]{id, ticket.getName(), ticket, ticket.getSplitSharedId(), ticket.isPrinted(), ticket.isListModified(), 0};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.SERIALIZABLE, Datas.STRING, Datas.BOOLEAN, Datas.BOOLEAN, Datas.INT};
-        new PreparedSentence(s, "UPDATE SHAREDTICKETS SET ISPRINTED = ?, ISMODIFIED = ?,UPDATED=NOW(),ISKDS=?  WHERE ID = ? AND SPLITID=? ", new SerializerWriteBasicExt(datas, new int[]{4, 5, 6, 0, 3})).exec(values);
- 
- }*/
- 
- public void updateServedTransactionSplit(RetailTicketInfo m_oTicket,final String placeid,final String oldorderitemid,final String neworderitemid,int oldorderno,int neworderno) {
-
-        for (RetailTicketLineInfo newline : m_oTicket.getLines()) {     
-            if(oldorderitemid == newline.getTbl_orderId()){
-  System.out.println("UPDATING TABLE for Split : "+m_oTicket.getPlaceId()+"orderitemid"+newline.getTbl_orderId()+"..."+newline.getMultiply()+"date:::"+newline.getKotdate());
-  
-Object[] values = new Object[]{neworderno,neworderitemid,placeid,oldorderno,oldorderitemid};
-Datas[] datas = new Datas[]{Datas.INT,Datas.STRING,Datas.STRING,Datas.INT,Datas.STRING};
-    try {        
-new PreparedSentence(s, "UPDATE SERVEDTRANSACTION SET ORDERNUM = ?,ORDERITEM_ID = ?,UPDATED=NOW() WHERE TABLEID=? AND ORDERNUM = ? AND ORDERITEM_ID = ?", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2 ,3 ,4})).exec(values);
-        } catch (BasicException ex) {
-                Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-           
-        }
-    }
- }
- 
-  public String getPeoplebyRole(String user) throws BasicException {
-        if (user == null) {
-            return null;
-        } else {
-            Object[] record = (Object[]) new StaticSentence(s, "SELECT R.NAME AS rolename FROM ROLES R,PEOPLE P WHERE P.ROLE=R.ID AND P.NAME=?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(user);
-            return record == null ? "" : record[0].toString();
+            Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    public List<ServedTransactionInfo> getUpdateFromServedTransaction(String id) throws BasicException {
+        return (List<ServedTransactionInfo>) new StaticSentence(s, "SELECT ID, SERVEDBY, SERVEDTIME , PREPARATIONSTATUS FROM SERVEDTRANSACTION WHERE ORDERITEM_ID = '" + id + "'", null, new SerializerReadClass(ServedTransactionInfo.class)).list();
+    }
+    
+      
+       public String getUserName(String id) throws BasicException {
+        Object[] record = (Object[]) new StaticSentence(s, "SELECT NAME FROM PEOPLE WHERE ID= '" + id + "'", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find();
+        return record == null ? "" : record[0].toString();
 
-}//end class
+    }
+       
+       
+
+}

@@ -130,7 +130,6 @@ public class JRetailTicketsBagShared extends JRetailTicketsBag {
         if (m_sCurrentTicket != null) {
 
             try {
-                System.out.println("calling sharedticket insert");
                 dlReceipts.insertRetailSharedTicket(m_sCurrentTicket, m_panelticket.getActiveTicket());
             } catch (BasicException e) {
                 new MessageInf(e).show(this);

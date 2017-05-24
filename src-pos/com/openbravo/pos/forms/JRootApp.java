@@ -973,7 +973,7 @@ public class JRootApp extends JPanel implements AppView {
     }
 
     public void showLogin() {
-       System.out.println("showLogin cursor logic and dbname testing shilpa");
+       System.out.println("showLogin cursor logic and dbname testing");
        String args[]=null;
        AppConfig config = new AppConfig(args);
        config.load();

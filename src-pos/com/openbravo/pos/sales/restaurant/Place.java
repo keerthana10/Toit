@@ -101,7 +101,6 @@ public class Place implements SerializableRead, java.io.Serializable {
      * @return the isSplit
      */
     public int getIsSplit() {
-        
         return isSplit;
     }
 

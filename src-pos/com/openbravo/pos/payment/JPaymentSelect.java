@@ -91,7 +91,6 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
         ArrayList<PaymentInfo> apay = new ArrayList<PaymentInfo>();
         for (final PaymentInfo p : m_aPaymentInfo.getPayments()) {
             PaymentInfo ppp = new PaymentInfo() {
-
                 @Override
                 public String getName() {
                     return p.getName();
@@ -136,6 +135,11 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
                     }
                     return av;
                 }
+
+                @Override
+                public String getMobile() {
+                    return "";
+                }
             };
         }
         return apay;
@@ -146,13 +150,13 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
         LinkedList<PaymentInfo> payments2 = m_aPaymentInfo.getPayments();
         if (m_aPaymentInfo.getPayments().size() > 0) {
             for (int i = 0; i < m_aPaymentInfo.getPayments().size(); i++) {
-                if(m_aPaymentInfo.getPayments().get(i).getName().equals("Voucher")){
-                    if(isVoucherAdded){
+                if (m_aPaymentInfo.getPayments().get(i).getName().equals("Voucher")) {
+                    if (isVoucherAdded) {
                         payments2.remove(i);
-                    }else{
+                    } else {
                         isVoucherAdded = true;
                     }
-                    
+
                 }
 
             }
@@ -358,7 +362,6 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 //            return "/com/openbravo/images/package_toys.png";
 //        }
 //    }
-
 //    public class JPaymentDebtCreator implements JPaymentCreator {
 //
 //        public JPaymentInterface createJPayment() {
@@ -377,7 +380,6 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 //            return "/com/openbravo/images/kdmconfig32.png";
 //        }
 //    }
-
 //    public class JPaymentCashRefundCreator implements JPaymentCreator {
 //
 //        public JPaymentInterface createJPayment() {
@@ -396,7 +398,6 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 //            return "/com/openbravo/images/cash.png";
 //        }
 //    }
-
     public class JPaymentChequeRefundCreator implements JPaymentCreator {
 
         public JPaymentInterface createJPayment() {
@@ -686,30 +687,30 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
             }
             if ((!returnPayment.getName().equals("cashrefund")) && (!returnPayment.getName().equals("chequerefund")) && (!returnPayment.getName().equals("paperout")) && (!returnPayment.getName().equals("magcardrefund"))) {
                 //paymentPaper.finder = null;
-                
+
                 paymentPaper.setgVoucherList(null);
                 paymentPaper.setVoucherTotalText("");
                 //voucherlist.clear();
             }
             accepted = true;
             dispose();
-        
+
         }
 
         /*   PaymentInfo returnPayment = ((JPaymentInterface) m_jTabPayment.getSelectedComponent()).executePayment();
-        String method = returnPayment.getName();
-        double total = returnPayment.getTotal();
-        if (returnPayment != null) {
-          //  if (total != 0) {
-             //   m_aPaymentInfo.add(returnPayment);
-          //  }
-            //paymentPaper.finder = null;
-           // paymentPaper.setgVoucherList(null);
-          //  paymentPaper.setVoucherTotalText("");
-            //voucherlist.clear();
-            accepted = true;
-            dispose();
-        }*/
+         String method = returnPayment.getName();
+         double total = returnPayment.getTotal();
+         if (returnPayment != null) {
+         //  if (total != 0) {
+         //   m_aPaymentInfo.add(returnPayment);
+         //  }
+         //paymentPaper.finder = null;
+         // paymentPaper.setgVoucherList(null);
+         //  paymentPaper.setVoucherTotalText("");
+         //voucherlist.clear();
+         accepted = true;
+         dispose();
+         }*/
 
     }//GEN-LAST:event_m_jButtonOKActionPerformed
 
@@ -717,8 +718,8 @@ public abstract class JPaymentSelect extends javax.swing.JDialog
 
 
 //        paymentPaper.finder = null;
-    //    paymentPaper.setgVoucherList(null);
-    //    voucherlist.clear();
+        //    paymentPaper.setgVoucherList(null);
+        //    voucherlist.clear();
         dispose();
         accepted = false;
 

@@ -90,7 +90,7 @@ private ArrayList<ProductInfoExt> list=null;
         menuId=menupId;
         m_App=app;
         m_dlSystem = (DataLogicSystem) m_App.getBean("com.openbravo.pos.forms.DataLogicSystem");
-      dlCustomers = (DataLogicCustomers) m_App.getBean("com.openbravo.pos.customers.DataLogicCustomers");
+       dlCustomers = (DataLogicCustomers) m_App.getBean("com.openbravo.pos.customers.DataLogicCustomers");
        return showMessage(parent, dlCustomers,pname);
     }
 

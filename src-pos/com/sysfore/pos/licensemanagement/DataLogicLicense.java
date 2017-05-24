@@ -131,8 +131,7 @@ private SentenceExec m_InsertLicense;
             int i = Integer.parseInt(record[0]==null ? "0" :record[0].toString());
             return (i == 0 ? 0 : i);
 
-
-    }
+ }
     
      public void updateMultiSysLicense(String id, String licenseKey, String currentDate, String activationTo, String licenseTypeId, String Active, String macId, String strPurpose, String callType, String email, String info10,String mac) throws BasicException {
 
@@ -141,6 +140,5 @@ private SentenceExec m_InsertLicense;
         new PreparedSentence(s, "UPDATE SLMLICENSEHISTORY SET ID = ?, INFO1 = ?, INFO2= ?, INFO3 = ?, INFO4 = ?, INFO5 = ?, INFO6 = ?, INFO7 = ?, INFO8 = ?, INFO9 = ?, INFO10 = ? WHERE INFO6=? ", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11})).exec(values);
 
     }
-       
-
+  
 }

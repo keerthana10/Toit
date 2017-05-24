@@ -49,7 +49,7 @@ public class ImagePrinter implements Printable {
 
     @Override
     public int print(Graphics g, PageFormat aPageFormat, int aPageIndex) {
-        System.out.println("print----");
+      //  System.out.println("print----");
         if (aPageIndex > 0) {
             return NO_SUCH_PAGE;
         }

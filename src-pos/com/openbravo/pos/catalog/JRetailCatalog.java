@@ -294,7 +294,6 @@ public class JRetailCatalog extends JPanel implements ListSelectionListener, Cat
                 // Add subcategories
                 java.util.List<CategoryInfo> categories = m_dlSales.getSubcategories(catid);
                 for (CategoryInfo cat : categories) {
-
                     jcurrTab.addButton(new ImageIcon(tnbcat.getThumbNailText(null, cat.getName())), new SelectedCategory(cat));
                 }
                 
@@ -340,7 +339,7 @@ public class JRetailCatalog extends JPanel implements ListSelectionListener, Cat
     }
       private String getCategoryLabel(CategoryInfo product) {
      //   System.out.println("getCategoryLabel");
-      //  if (pricevisible) {
+     //  if (pricevisible) {
           //  if (taxesincluded) {
               //  TaxInfo tax = taxeslogic.getTaxInfo(product.getTaxCategoryID());
                 return "<html><center>" + product.getName() + "<br>" ;

@@ -88,6 +88,10 @@ public class PaymentInfoStaff extends PaymentInfo {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public String getMobile() {
+return "";    }
+
 
 }
 

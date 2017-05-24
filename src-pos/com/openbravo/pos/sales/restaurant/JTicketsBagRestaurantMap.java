@@ -230,7 +230,6 @@ public class JTicketsBagRestaurantMap extends JTicketsBag {
         if (m_PlaceCurrent != null) {
                           
             try {
-                System.out.println("Move Ticket Clickewd");
                 dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
             } catch (BasicException e) {
                 new MessageInf(e).show(this);
@@ -363,7 +362,6 @@ public class JTicketsBagRestaurantMap extends JTicketsBag {
     }
     
     private void setActivePlace(Place place, TicketInfo ticket) {
-          System.out.println("BInside setactive place in Jticketbagresta..map");
         m_PlaceCurrent = place;
         m_panelticket.setActiveTicket(ticket, m_PlaceCurrent.getName());
     }
@@ -408,15 +406,11 @@ public class JTicketsBagRestaurantMap extends JTicketsBag {
                         // table occupied
                         ticket = new TicketInfo();
                         try {
-                            System.out.println("Insert from ticketrest3");
                             dlReceipts.insertSharedTicket(m_place.getId(), ticket);
-                            //System.out.println("Insert from ticketrest3");
-                            //   dlReceipts.insertSharedTicketTemp(m_place.getId(), ticket);
                         } catch (BasicException e) {
                             new MessageInf(e).show(JTicketsBagRestaurantMap.this); // Glup. But It was empty.
                         }                     
                         m_place.setPeople(true);
-                        System.out.println("Before setactive place in Jticketbagresta..map");
                         setActivePlace(m_place, ticket);
 
                     } else if (ticket == null  && m_place.hasPeople()) {
@@ -454,10 +448,7 @@ public class JTicketsBagRestaurantMap extends JTicketsBag {
                         }                     
                         
                         try {
-                            System.out.println("Insert from ticketrest1");
                             dlReceipts.insertSharedTicket(m_place.getId(), ticket);
-                            //System.out.println("Insert from ticketrest1");
-                            // dlReceipts.insertSharedTicketTemp(m_place.getId(), ticket);
                         } catch (BasicException e) {
                             new MessageInf(e).show(JTicketsBagRestaurantMap.this); // Glup. But It was empty.
                         }                     
@@ -499,10 +490,7 @@ public class JTicketsBagRestaurantMap extends JTicketsBag {
 
                         if (ticket == null) {
                             try {
-                                System.out.println("Insert from ticketrest2");
                                 dlReceipts.insertSharedTicket(m_place.getId(), ticketclip);
-                               // System.out.println("Insert from ticketrest2");
-                               // dlReceipts.insertSharedTicketTemp(m_place.getId(), ticketclip);
                                 m_place.setPeople(true);
                                 dlReceipts.deleteSharedTicket(m_PlaceClipboard.getId());
                                 m_PlaceClipboard.setPeople(false);

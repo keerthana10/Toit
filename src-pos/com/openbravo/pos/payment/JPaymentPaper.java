@@ -143,6 +143,11 @@ public class JPaymentPaper extends javax.swing.JPanel implements JPaymentInterfa
                 }
                 return al;
             }
+
+            @Override
+            public String getMobile() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
         };
         return p;
     }

@@ -20,8 +20,10 @@ public class PaymentInfoCard extends PaymentInfo {
     private double m_dTotal;
     private ArrayList<PaymentDetails> cardnumbers;
 
-    /** Creates a new instance of PaymentInfoCash */
-    public PaymentInfoCard(double dTotal, double dPaid){//, List cardno) {
+    /**
+     * Creates a new instance of PaymentInfoCash
+     */
+    public PaymentInfoCard(double dTotal, double dPaid) {//, List cardno) {
         m_id = UUID.randomUUID().toString();
         m_dTotal = dTotal;
         m_dPaid = dPaid;
@@ -61,7 +63,6 @@ public class PaymentInfoCard extends PaymentInfo {
         return m_id;
     }
 
- 
     public List getChequenumbers() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -72,7 +73,7 @@ public class PaymentInfoCard extends PaymentInfo {
 
     @Override
     public String getVoucherNo() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "";
     }
 
     @Override
@@ -80,5 +81,8 @@ public class PaymentInfoCard extends PaymentInfo {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
+    @Override
+    public String getMobile() {
+        return "";
+    }
 }

@@ -21,26 +21,28 @@ public class PaymentInfoVoucherDetails extends PaymentInfo {
     private String voucher_Id;
     private ArrayList<PaymentDetails> cardnumbers;
 
-    /** Creates a new instance of PaymentInfoVoucherDetails */
-    public PaymentInfoVoucherDetails(double dTotal, double dPaid,String voucherNo){//, List cardno) {
+    /**
+     * Creates a new instance of PaymentInfoVoucherDetails
+     */
+    public PaymentInfoVoucherDetails(double dTotal, double dPaid, String voucherNo) {//, List cardno) {
         m_id = UUID.randomUUID().toString();
         m_dTotal = dTotal;
         m_dPaid = dPaid;
-        voucher_Id=voucherNo;
+        voucher_Id = voucherNo;
         //cardnumbers = (ArrayList<PaymentDetails>) cardno;
     }
-    
-    public PaymentInfoVoucherDetails(double dTotal, double dPaid){//, List cardno) {
+
+    public PaymentInfoVoucherDetails(double dTotal, double dPaid) {//, List cardno) {
         m_id = UUID.randomUUID().toString();
         m_dTotal = dTotal;
         m_dPaid = dPaid;
-        
+
         //cardnumbers = (ArrayList<PaymentDetails>) cardno;
     }
 
     @Override
     public PaymentInfo copyPayment() {
-        return new PaymentInfoVoucherDetails(m_dTotal, m_dPaid,voucher_Id);//, getCardnumbers());
+        return new PaymentInfoVoucherDetails(m_dTotal, m_dPaid, voucher_Id);//, getCardnumbers());
     }
 
     public String getName() {
@@ -71,7 +73,6 @@ public class PaymentInfoVoucherDetails extends PaymentInfo {
         return m_id;
     }
 
- 
     public List getChequenumbers() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -82,7 +83,7 @@ public class PaymentInfoVoucherDetails extends PaymentInfo {
 
     @Override
     public String getVoucherNo() {
-       return voucher_Id;
+        return voucher_Id;
     }
 
     @Override
@@ -90,5 +91,8 @@ public class PaymentInfoVoucherDetails extends PaymentInfo {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
+    @Override
+    public String getMobile() {
+        return "";
+    }
 }

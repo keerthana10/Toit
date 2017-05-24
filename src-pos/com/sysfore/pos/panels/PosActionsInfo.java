@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sysfore.pos.panels;
 
 /**
@@ -23,15 +22,17 @@ public class PosActionsInfo implements SerializableRead, SerializableWrite {
 
     private static final long serialVersionUID = 7640633837719L;
     private String printAccess;
-     private String settleAccess;
-      private String cancelAccess;
-      private String discountAccess;
-      private String splitAccess;
-      private String moveTableAccess;
+    private String settleAccess;
+    private String cancelAccess;
+    private String discountAccess;
+    private String splitAccess;
+    private String moveTableAccess;
+    private String serviceChargeAccess;
+    private String name;
 
-
-       private String name;
-    /** Creates a new instance of DiscountRateinfo */
+    /**
+     * Creates a new instance of DiscountRateinfo
+     */
     public PosActionsInfo() {
     }
 
@@ -42,15 +43,20 @@ public class PosActionsInfo implements SerializableRead, SerializableWrite {
         discountAccess = dr.getString(4);
         splitAccess = dr.getString(5);
         moveTableAccess = dr.getString(6);
-        
+        serviceChargeAccess = dr.getString(7);
+
+
     }
+
     public void writeValues(DataWrite dp) throws BasicException {
         dp.setString(1, printAccess);
         dp.setString(2, settleAccess);
-         dp.setString(3, cancelAccess);
+        dp.setString(3, cancelAccess);
         dp.setString(4, discountAccess);
-         dp.setString(5, splitAccess);
+        dp.setString(5, splitAccess);
         dp.setString(6, moveTableAccess);
+        dp.setString(7, serviceChargeAccess);
+
     }
 
     public String getCancelAccess() {
@@ -109,5 +115,11 @@ public class PosActionsInfo implements SerializableRead, SerializableWrite {
         this.splitAccess = splitAccess;
     }
 
-   
+    public String getServiceChargeAccess() {
+        return serviceChargeAccess;
+    }
+
+    public void setServiceChargeAccess(String serviceChargeAccess) {
+        this.serviceChargeAccess = serviceChargeAccess;
+    }
 }

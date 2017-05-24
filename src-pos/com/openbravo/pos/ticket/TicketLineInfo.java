@@ -69,7 +69,6 @@ public class TicketLineInfo implements SerializableWrite, SerializableRead, Seri
     public java.util.ArrayList<PromoRuleIdInfo> promoRuleIdList;
     private double billDiscount;
   
-    
     double qty =0;
     int buttonPlus;
     String pdtpromoType = "";

@@ -2,64 +2,64 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.openbravo.pos.payment;
 
 /**
  *
  * @author ravi
  */
-
-
-
 import com.openbravo.format.Formats;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class PaymentInfoCheque extends PaymentInfo {
+
     private String m_id;
     private double m_dPaid;
     private double m_dTotal;
     private String chequeNo;
     private ArrayList<PaymentDetails> chequenumbers;
 
-
-    /** Creates a new instance of PaymentInfoCash */
+    /**
+     * Creates a new instance of PaymentInfoCash
+     */
     public PaymentInfoCheque(double dTotal, double dPaid, List dchno) {
-        m_id=UUID.randomUUID().toString();
+        m_id = UUID.randomUUID().toString();
         m_dTotal = dTotal;
         m_dPaid = dPaid;
-        chequenumbers=(ArrayList)dchno;
+        chequenumbers = (ArrayList) dchno;
     }
 
-      
-      
-     
-    public PaymentInfo copyPayment(){
+    public PaymentInfo copyPayment() {
         return new PaymentInfoCheque(m_dTotal, m_dPaid, getChequenumbers());
     }
 
     public String getName() {
         return "Cheque";
     }
+
     public double getTotal() {
         return m_dPaid;
     }
+
     public double getPaid() {
         return m_dPaid;
     }
-    public String getTransactionID(){
+
+    public String getTransactionID() {
         return "no ID";
     }
 
     public String printPaid() {
         return Formats.CURRENCY.formatValue(new Double(m_dPaid));
     }
+
     public String printChange() {
         return Formats.CURRENCY.formatValue(new Double(m_dPaid - m_dTotal));
     }
-     public String getID() {
+
+    public String getID() {
         return m_id;
     }
 
@@ -82,5 +82,10 @@ public class PaymentInfoCheque extends PaymentInfo {
     @Override
     public ArrayList<VouchersList> getPaymentSplits() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getMobile() {
+        return "";
     }
 }

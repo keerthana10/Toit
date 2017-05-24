@@ -32,7 +32,7 @@ import javax.swing.table.DefaultTableModel;
  * @author shilpa
  */
 public class JRetailKdsDetails extends JDialog {
-    
+
     int x = 500;
     int y = 300;
     int width = 350;
@@ -40,17 +40,16 @@ public class JRetailKdsDetails extends JDialog {
     static RetailTicketLineInfo lineInfo = null;
     DefaultTableModel totalTableModel;
     DefaultTableModel itemsTableModel;
-    List productTypeList=new ArrayList();
-   static DataLogicReceipts dlReceipts;
-    static Map<String,String> userMap;
-  
-    
+    List productTypeList = new ArrayList();
+    static DataLogicReceipts dlReceipts;
+    static Map<String, String> userMap;
+
     private void init(DataLogicReceipts dlReceipts) {
         initComponents();
         this.setResizable(false);
-         setDataToItemsTable(jItemsTable);
+        setDataToItemsTable(jItemsTable);
         setVisible(true);
-        
+
     }
 
     /**
@@ -60,18 +59,18 @@ public class JRetailKdsDetails extends JDialog {
         super(parent, modal);
         setBounds(x, y, width, height);
     }
-    
+
     private JRetailKdsDetails(Dialog dialog, boolean b) {
         super(dialog, true);
         setBounds(x, y, width, height);
-        
+
     }
-    
-    public static void showItemsScreen(Component parent, RetailTicketLineInfo Info, DataLogicReceipts dlReceipt,Map map) {
-       lineInfo = Info;
-       userMap=map;
+
+    public static void showItemsScreen(Component parent, RetailTicketLineInfo Info, DataLogicReceipts dlReceipt, Map map) {
+        lineInfo = Info;
+        userMap = map;
         Window window = getWindow(parent);
-        dlReceipts=dlReceipt;
+        dlReceipts = dlReceipt;
         JRetailKdsDetails myMsg;
         if (window instanceof Frame) {
             myMsg = new JRetailKdsDetails((Frame) window, true);
@@ -80,7 +79,7 @@ public class JRetailKdsDetails extends JDialog {
         }
         myMsg.init(dlReceipts);
     }
-    
+
     private static Window getWindow(Component parent) {
         if (parent == null) {
             return new JFrame();
@@ -90,8 +89,6 @@ public class JRetailKdsDetails extends JDialog {
             return getWindow(parent.getParent());
         }
     }
-    
-    
 
     private void setDataToItemsTable(JTable table) {
         itemsTableModel = (DefaultTableModel) jItemsTable.getModel();
@@ -99,15 +96,32 @@ public class JRetailKdsDetails extends JDialog {
         jItemsTable.getTableHeader().setPreferredSize(new Dimension(20, 25));
         //jItemsTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         jItemsTable.setRowHeight(40);
-        String orderTime="";
-        String servedTime="";
-        orderTime=DateFormats.DateToString(lineInfo.getKotdate());
-        if(lineInfo.getServedTime()!=null){
-        servedTime=DateFormats.DateToString(lineInfo.getServedTime());
+        String orderTime = "";
+        String servedTime = "";
+        orderTime = DateFormats.DateToString(lineInfo.getKotdate());
+        if (lineInfo.getServedTime() != null) {
+            servedTime = DateFormats.DateToString(lineInfo.getServedTime());
         }
-       itemsTableModel.addRow(new Object[]{orderTime,userMap.get(lineInfo.getKotuser()),servedTime,userMap.get(lineInfo.getServedBy())}); 
+        List<ServedTransactionInfo> stList;
+        try {
+            
+            System.out.println("lineInfo.getTbl_orderId() : "+lineInfo.getTbl_orderId());
+            stList = dlReceipts.getUpdateFromServedTransaction(lineInfo.getTbl_orderId());
+            for (ServedTransactionInfo servedTrans : stList) {
+            String userName=dlReceipts.getUserName(servedTrans.getServedBy());
+            itemsTableModel.addRow(new Object[]{orderTime, userMap.get(lineInfo.getKotuser()), servedTrans.getServedTime(),  userName});
 
+            }
         
+            // itemsTableModel.addRow(new Object[]{orderTime, userMap.get(lineInfo.getKotuser()), servedTime, userMap.get(lineInfo.getServedBy())});
+      
+           
+        } catch (BasicException ex) {
+            Logger.getLogger(JRetailKdsDetails.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+
     }
 
     /**
@@ -171,26 +185,9 @@ public class JRetailKdsDetails extends JDialog {
     private void WindowClosingEvent(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_WindowClosingEvent
         dispose();
     }//GEN-LAST:event_WindowClosingEvent
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jDetailedPanel;
     private javax.swing.JTable jItemsTable;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-
- 
-
-   
-
-  
-
-  
-
-
-    
-   
-
-    
-    
-
 }

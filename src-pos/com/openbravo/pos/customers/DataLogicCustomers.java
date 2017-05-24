@@ -49,6 +49,7 @@ import com.openbravo.pos.inventory.SectionMappingInfo;
 import com.openbravo.pos.inventory.StaffInfo;
 import com.openbravo.pos.sales.DiscountRateinfo;
 import com.openbravo.pos.sales.DiscountReasonInfo;
+import com.openbravo.pos.sales.MobileTypeInfo;
 import com.openbravo.pos.ticket.ProductInfoExt;
 import com.openbravo.pos.ticket.UserInfo;
 import com.sysfore.pos.creditsale.ActiveInfo;
@@ -930,7 +931,6 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
 
     public String getIsPaidStatus(String documentNo) throws BasicException {
         Object[] record = null;
-
         record = (Object[]) new StaticSentence(s, "SELECT ISPAIDSTATUS FROM TICKETS WHERE DOCUMENTNO='" + documentNo + "'", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find();
         String i = record[0] == null ? "" : record[0].toString();
         return (i == null ? "" : i);
@@ -1195,11 +1195,11 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
 
     }
 
-    public void updateDiscountReasons(String id, String reason,String active) throws BasicException {
+    public void updateDiscountReasons(String id, String reason, String active) throws BasicException {
 
-        Object[] values = new Object[]{id, reason,active};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING};
-        new PreparedSentence(s, "UPDATE DISCOUNTREASON SET REASON=?,ISACTIVE=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2,0})).exec(values);
+        Object[] values = new Object[]{id, reason, active};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "UPDATE DISCOUNTREASON SET REASON=?,ISACTIVE=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 0})).exec(values);
 
     }
 
@@ -1215,19 +1215,19 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
     }
 
     // Discount  Sub Reason
-    public void insertDiscountSubReasons(String id, String reason, String subReason,String active) throws BasicException {
+    public void insertDiscountSubReasons(String id, String reason, String subReason, String active) throws BasicException {
 
-        Object[] values = new Object[]{id, reason, subReason,active};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING,Datas.STRING};
-        new PreparedSentence(s, "INSERT INTO DISCOUNTSUBREASON (ID,REASON,SUBREASON,ISACTIVE) VALUES (?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2,3})).exec(values);
+        Object[] values = new Object[]{id, reason, subReason, active};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "INSERT INTO DISCOUNTSUBREASON (ID,REASON,SUBREASON,ISACTIVE) VALUES (?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3})).exec(values);
 
     }
 
-    public void updateDiscountSubReasons(String id, String reason, String subReason,String active) throws BasicException {
+    public void updateDiscountSubReasons(String id, String reason, String subReason, String active) throws BasicException {
 
-        Object[] values = new Object[]{id, reason, subReason,active};
+        Object[] values = new Object[]{id, reason, subReason, active};
         Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
-        new PreparedSentence(s, "UPDATE DISCOUNTSUBREASON SET REASON=?, SUBREASON=?,ISACTIVE=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2,3, 0})).exec(values);
+        new PreparedSentence(s, "UPDATE DISCOUNTSUBREASON SET REASON=?, SUBREASON=?,ISACTIVE=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 3, 0})).exec(values);
 
     }
 
@@ -1236,7 +1236,7 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
 
         return (List<DiscountSubReasonInfo>) new StaticSentence(s, "SELECT ID,REASON, SUBREASON,ISACTIVE FROM DISCOUNTSUBREASON ORDER BY SUBREASON", null, new SerializerReadClass(DiscountSubReasonInfo.class)).list();
     }
-    
+
     public List<DiscountSubReasonInfo> getActiveDiscountSubReasonList() throws BasicException {
 
         return (List<DiscountSubReasonInfo>) new StaticSentence(s, "SELECT ID,REASON, SUBREASON,ISACTIVE FROM DISCOUNTSUBREASON WHERE ISACTIVE='Y' ORDER BY SUBREASON", null, new SerializerReadClass(DiscountSubReasonInfo.class)).list();
@@ -1255,168 +1255,177 @@ public class DataLogicCustomers extends BeanFactoryDataSingle {
             }
         });
     }
-             //master data queries
-         
-          public void deletePrinter(String val) throws BasicException {
+    //master data queries
+
+    public void deletePrinter(String val) throws BasicException {
 
         new StaticSentence(s, "DELETE FROM PRINTERCONFIG WHERE NAME = ?", SerializerWriteString.INSTANCE).exec(val);
 
     }
-          
-           public List<ProductionAreaTypeInfo> getPrinterConfigurationList() throws BasicException {
+
+    public List<ProductionAreaTypeInfo> getPrinterConfigurationList() throws BasicException {
 
         return (List<ProductionAreaTypeInfo>) new StaticSentence(s, "SELECT ID,SEARCHKEY,NAME,DESCRIPTION FROM PRINTERCONFIG ", null, new SerializerReadClass(ProductionAreaTypeInfo.class)).list();
     }
-           
-             public void insertPrinter(String id, String skey,String name,String desc) throws BasicException {
-       
-        Object[] values = new Object[]{id,skey, name,desc};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING};
-        new PreparedSentence(s, "INSERT INTO PRINTERCONFIG (ID,SEARCHKEY,NAME,DESCRIPTION) VALUES (?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1,2,3})).exec(values);
 
-    }   
-             
-              public void updatePrinter(String id, String skey,String name,String desc) throws BasicException {
+    public void insertPrinter(String id, String skey, String name, String desc) throws BasicException {
 
-        Object[] values = new Object[]{id,skey,name,desc};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING};
-        new PreparedSentence(s, "UPDATE PRINTERCONFIG SET SEARCHKEY=?,NAME = ?,DESCRIPTION=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1,2,3, 0})).exec(values);
+        Object[] values = new Object[]{id, skey, name, desc};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "INSERT INTO PRINTERCONFIG (ID,SEARCHKEY,NAME,DESCRIPTION) VALUES (?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3})).exec(values);
 
     }
-              
-      public String getPrinterName(String id) throws BasicException {
+
+    public void updatePrinter(String id, String skey, String name, String desc) throws BasicException {
+
+        Object[] values = new Object[]{id, skey, name, desc};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "UPDATE PRINTERCONFIG SET SEARCHKEY=?,NAME = ?,DESCRIPTION=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 3, 0})).exec(values);
+
+    }
+
+    public String getPrinterName(String id) throws BasicException {
 
         Object[] record = (Object[]) new StaticSentence(s, "SELECT NAME FROM PRINTERCONFIG WHERE NAME = ?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(id);
         return record == null ? "NONAME" : (String) record[0];
 
     }
-      
-       public final SentenceList getPrinterConfigList() {
-        return new StaticSentence(s
-            , "SELECT ID,NAME FROM PRINTERCONFIG ORDER BY NAME"
-            , null
-            , new SerializerRead() { public Object readValues(DataRead dr) throws BasicException {
+
+    public final SentenceList getPrinterConfigList() {
+        return new StaticSentence(s, "SELECT ID,NAME FROM PRINTERCONFIG ORDER BY NAME", null, new SerializerRead() {
+            public Object readValues(DataRead dr) throws BasicException {
                 return new ComboInfo(dr.getString(1), dr.getString(2));
-            }});
+            }
+        });
     }
-       
-        public final SentenceList getProductionAreaTypeList() {
-        return new StaticSentence(s
-            , "SELECT ID,NAME FROM PRODUCTIONAREATYPE ORDER BY NAME"
-            , null
-            , new SerializerRead() { public Object readValues(DataRead dr) throws BasicException {
+
+    public final SentenceList getProductionAreaTypeList() {
+        return new StaticSentence(s, "SELECT ID,NAME FROM PRODUCTIONAREATYPE ORDER BY NAME", null, new SerializerRead() {
+            public Object readValues(DataRead dr) throws BasicException {
                 return new ComboInfo(dr.getString(1), dr.getString(2));
-            }});
+            }
+        });
     }
-        
-        public void deleteProductionArea(String val) throws BasicException {
+
+    public void deleteProductionArea(String val) throws BasicException {
 
         new StaticSentence(s, "DELETE FROM PRODUCTIONAREA WHERE NAME = ?", SerializerWriteString.INSTANCE).exec(val);
 
     }
-        
-          public List<ProductionAreaInfo> getPAreaList() throws BasicException {
+
+    public List<ProductionAreaInfo> getPAreaList() throws BasicException {
 
         return (List<ProductionAreaInfo>) new StaticSentence(s, "SELECT ID,SEARCHKEY,NAME,RESTUARANTPRINTER,PRODUCTIONAREATYPE,DESCRIPTION,ISKOT FROM PRODUCTIONAREA ", null, new SerializerReadClass(ProductionAreaInfo.class)).list();
     }
-          
-            public void insertProductionArea(String id, String skey,String name,String printer,String area,String desc,String iskot) throws BasicException {
-       
-        Object[] values = new Object[]{id,skey, name,printer,area,desc,iskot};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING, Datas.STRING};
-        new PreparedSentence(s, "INSERT INTO PRODUCTIONAREA (ID,SEARCHKEY,NAME,RESTUARANTPRINTER,PRODUCTIONAREATYPE,DESCRIPTION,ISKOT) VALUES (?,?,?,?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1,2,3,4,5,6})).exec(values);
+
+    public void insertProductionArea(String id, String skey, String name, String printer, String area, String desc, String iskot) throws BasicException {
+
+        Object[] values = new Object[]{id, skey, name, printer, area, desc, iskot};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "INSERT INTO PRODUCTIONAREA (ID,SEARCHKEY,NAME,RESTUARANTPRINTER,PRODUCTIONAREATYPE,DESCRIPTION,ISKOT) VALUES (?,?,?,?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6})).exec(values);
 
     }
-             public void updateProductionArea(String id, String skey,String name,String printer,String area,String desc,String iskot) throws BasicException {
 
-        Object[] values = new Object[]{id,skey,name,printer,area,desc,iskot};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING,Datas.STRING,Datas.STRING,Datas.STRING};
-        new PreparedSentence(s, "UPDATE PRODUCTIONAREA SET SEARCHKEY=?,NAME = ?,RESTUARANTPRINTER=?,PRODUCTIONAREATYPE=?,DESCRIPTION=?,ISKOT=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1,2,3,4,5,6, 0})).exec(values);
+    public void updateProductionArea(String id, String skey, String name, String printer, String area, String desc, String iskot) throws BasicException {
+
+        Object[] values = new Object[]{id, skey, name, printer, area, desc, iskot};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "UPDATE PRODUCTIONAREA SET SEARCHKEY=?,NAME = ?,RESTUARANTPRINTER=?,PRODUCTIONAREATYPE=?,DESCRIPTION=?,ISKOT=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 3, 4, 5, 6, 0})).exec(values);
 
     }
-             
-     public String getProductionAreaName(String id) throws BasicException {
+
+    public String getProductionAreaName(String id) throws BasicException {
 
         Object[] record = (Object[]) new StaticSentence(s, "SELECT NAME FROM PRODUCTIONAREA WHERE NAME = ?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(id);
         return record == null ? "NONAME" : (String) record[0];
 
     }
-     
-      public void deleteProductionAreaType(String val) throws BasicException {
+
+    public void deleteProductionAreaType(String val) throws BasicException {
 
         new StaticSentence(s, "DELETE FROM PRODUCTIONAREATYPE WHERE NAME = ?", SerializerWriteString.INSTANCE).exec(val);
 
     }
-      public List<ProductionAreaTypeInfo> getPAreaTypeList() throws BasicException {
+
+    public List<ProductionAreaTypeInfo> getPAreaTypeList() throws BasicException {
 
         return (List<ProductionAreaTypeInfo>) new StaticSentence(s, "SELECT ID,SEARCHKEY,NAME,DESCRIPTION FROM PRODUCTIONAREATYPE ", null, new SerializerReadClass(ProductionAreaTypeInfo.class)).list();
     }
-      
-           public void insertProductionAreaType(String id, String skey,String name,String desc) throws BasicException {
-       
-        Object[] values = new Object[]{id,skey, name,desc};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING};
-        new PreparedSentence(s, "INSERT INTO PRODUCTIONAREATYPE (ID,SEARCHKEY,NAME,DESCRIPTION) VALUES (?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1,2,3})).exec(values);
+
+    public void insertProductionAreaType(String id, String skey, String name, String desc) throws BasicException {
+
+        Object[] values = new Object[]{id, skey, name, desc};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "INSERT INTO PRODUCTIONAREATYPE (ID,SEARCHKEY,NAME,DESCRIPTION) VALUES (?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3})).exec(values);
 
     }
-            public void updateProductionAreaType(String id, String skey,String name,String desc) throws BasicException {
 
-        Object[] values = new Object[]{id,skey,name,desc};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING};
-        new PreparedSentence(s, "UPDATE PRODUCTIONAREATYPE SET SEARCHKEY=?,NAME = ?,DESCRIPTION=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1,2,3, 0})).exec(values);
+    public void updateProductionAreaType(String id, String skey, String name, String desc) throws BasicException {
+
+        Object[] values = new Object[]{id, skey, name, desc};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "UPDATE PRODUCTIONAREATYPE SET SEARCHKEY=?,NAME = ?,DESCRIPTION=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 3, 0})).exec(values);
 
     }
-             public String getProductionAreaTypeName(String id) throws BasicException {
+
+    public String getProductionAreaTypeName(String id) throws BasicException {
 
         Object[] record = (Object[]) new StaticSentence(s, "SELECT NAME FROM PRODUCTIONAREATYPE WHERE NAME = ?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(id);
         return record == null ? "NONAME" : (String) record[0];
 
     }
-             public final SentenceList getProductionAreaList() {
-        return new StaticSentence(s
-            , "SELECT ID,NAME FROM PRODUCTIONAREA ORDER BY NAME"
-            , null
-            , new SerializerRead() { public Object readValues(DataRead dr) throws BasicException {
+
+    public final SentenceList getProductionAreaList() {
+        return new StaticSentence(s, "SELECT ID,NAME FROM PRODUCTIONAREA ORDER BY NAME", null, new SerializerRead() {
+            public Object readValues(DataRead dr) throws BasicException {
                 return new ComboInfo(dr.getString(1), dr.getString(2));
-            }});
+            }
+        });
     }
-              
-          public final SentenceList getSectionList() {
-        return new StaticSentence(s
-            , "SELECT ID,NAME FROM FLOORS ORDER BY NAME"
-            , null
-            , new SerializerRead() { public Object readValues(DataRead dr) throws BasicException {
+
+    public final SentenceList getSectionList() {
+        return new StaticSentence(s, "SELECT ID,NAME FROM FLOORS ORDER BY NAME", null, new SerializerRead() {
+            public Object readValues(DataRead dr) throws BasicException {
                 return new ComboInfo(dr.getString(1), dr.getString(2));
-            }});
+            }
+        });
     }
-           public void deleteSectionMapping(String val) throws BasicException {
+
+    public void deleteSectionMapping(String val) throws BasicException {
 
         new StaticSentence(s, "DELETE FROM SECTIONMAPPING WHERE ID = ?", SerializerWriteString.INSTANCE).exec(val);
 
     }
-            public List<SectionMappingInfo> getSectionMappingList() throws BasicException {
+ //Section Mapping queries   
+    public List<SectionMappingInfo> getSectionMappingList() throws BasicException {
 
         return (List<SectionMappingInfo>) new StaticSentence(s, "SELECT S.ID,S.SECTION,S.PRODUCTIONAREATYPE,S.PRODUCTIONAREA,S.KITCHENDISPLAY,F.NAME FROM SECTIONMAPPING S LEFT JOIN FLOORS F ON S.SECTION=F.ID ORDER BY F.NAME", null, new SerializerReadClass(SectionMappingInfo.class)).list();
     }
-        
-            public void insertSectionMapping(String id,String section,String pareatype,String parea,String kdisplay) throws BasicException {
-       
-        Object[] values = new Object[]{id,section, pareatype,parea,kdisplay};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING,Datas.STRING};
-        new PreparedSentence(s, "INSERT INTO SECTIONMAPPING (ID,SECTION,PRODUCTIONAREATYPE,PRODUCTIONAREA,KITCHENDISPLAY) VALUES (?,?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1,2,3,4})).exec(values);
+
+    public void insertSectionMapping(String id, String section, String pareatype, String parea, String kdisplay) throws BasicException {
+
+        Object[] values = new Object[]{id, section, pareatype, parea, kdisplay};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "INSERT INTO SECTIONMAPPING (ID,SECTION,PRODUCTIONAREATYPE,PRODUCTIONAREA,KITCHENDISPLAY) VALUES (?,?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4})).exec(values);
 
     }
-          public void updateSectionMapping(String id, String section,String pareatype,String parea,String kdisplay) throws BasicException {
 
-        Object[] values = new Object[]{id,section,pareatype,parea,kdisplay};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING,Datas.STRING, Datas.STRING,Datas.STRING};
-        new PreparedSentence(s, "UPDATE SECTIONMAPPING SET SECTION=?,PRODUCTIONAREATYPE = ?,PRODUCTIONAREA=?,KITCHENDISPLAY=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1,2,3,4, 0})).exec(values);
+    public void updateSectionMapping(String id, String section, String pareatype, String parea, String kdisplay) throws BasicException {
+
+        Object[] values = new Object[]{id, section, pareatype, parea, kdisplay};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        new PreparedSentence(s, "UPDATE SECTIONMAPPING SET SECTION=?,PRODUCTIONAREATYPE = ?,PRODUCTIONAREA=?,KITCHENDISPLAY=?  WHERE ID= ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 3, 4, 0})).exec(values);
 
     }
-      public String getSectionName(String section,String areatype,String area) throws BasicException {
 
-        Object[] record = (Object[]) new StaticSentence(s, "SELECT SECTION FROM SECTIONMAPPING WHERE SECTION = ? AND PRODUCTIONAREATYPE='"+areatype+"' AND PRODUCTIONAREA='"+area+"' ", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(section);
+    public String getSectionName(String section, String areatype, String area) throws BasicException {
+
+        Object[] record = (Object[]) new StaticSentence(s, "SELECT SECTION FROM SECTIONMAPPING WHERE SECTION = ? AND PRODUCTIONAREATYPE='" + areatype + "' AND PRODUCTIONAREA='" + area + "' ", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(section);
         return record == null ? "NONAME" : (String) record[0];
 
+    }
+
+    public List<MobileTypeInfo> getMobileTypeList() throws BasicException {
+        return (List<MobileTypeInfo>) new StaticSentence(s, "SELECT ID,MOBILETYPE  FROM MOBILETYPEMASTERS ", null, new SerializerReadClass(MobileTypeInfo.class)).list();
     }
 }

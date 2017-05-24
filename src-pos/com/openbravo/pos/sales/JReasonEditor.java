@@ -285,9 +285,6 @@ class JReasonEditor extends JDialog {
           qty = 1*tinfoLocal.getLine(index).getMultiply();
           String addonId=tinfoLocal.getLine(index).getAddonId();
           //changed to save with server date
-          System.out.println("From JReasonEditor1");
-            //System.out.println("Remove/cancel line fromcancel/delete button"+tinfoLocal.getLine(index).getTbl_orderId());
-                            //    localDlReceipts.updateServedTransactionCancel(tinfoLocal);
          localDlReceipts.insertCancelledKot(tinfoLocal.getId(),tinfoLocal.getTicketId(),productName, "Y",qty,tinfoLocal.getLine(index).getKotid(),"Y",reason,reasonId,tinfoLocal.getPlaceId(),tinfoLocal.getUser().getId(),tinfoLocal.getOrderId());
          if(addonId!=null) {
             for(int i=0;i<tinfoLocal.getLinesCount();i++){
@@ -295,7 +292,6 @@ class JReasonEditor extends JDialog {
                if(tinfoLocal.getLine(i).getIsKot()==1)   {
                 if(addonId.equals(tinfoLocal.getLine(i).getAddonId()) && primaryAddon==1){
                     //changed to save with server date
-                    System.out.println("From JReasonEditor2");
                     localDlReceipts.insertCancelledKot(tinfoLocal.getId(),tinfoLocal.getTicketId(),tinfoLocal.getLine(i).getProductID(), "Y",1*tinfoLocal.getLine(i).getMultiply(),tinfoLocal.getLine(index).getKotid(),"Y","Addon Item Cancelled KOT",reasonId,tinfoLocal.getPlaceId(),tinfoLocal.getUser().getId(),tinfoLocal.getOrderId());
                  }
               }
@@ -305,11 +301,7 @@ class JReasonEditor extends JDialog {
        }else{
            qty=1; 
            //changed to save with server date
-           System.out.println("From JReasonEditor3");
             localDlReceipts.insertCancelledKot(tinfoLocal.getId(),tinfoLocal.getTicketId(),productName, "Y",qty,tinfoLocal.getLine(index).getKotid(),"Y",reason,reasonId,tinfoLocal.getPlaceId(),tinfoLocal.getUser().getId(),tinfoLocal.getOrderId());
-           System.out.println("From JReasonEditor33");                 
-                           //dlReceipts.updateServedTransaction(m_oTicket,"MODIFY");
-            //localDlReceipts.updateServedTransaction(tinfoLocal,"MODIFY");
             String addonId=tinfoLocal.getLine(index).getAddonId();
             if(addonId!=null) {
             for(int i=0;i<tinfoLocal.getLinesCount();i++){
@@ -317,7 +309,6 @@ class JReasonEditor extends JDialog {
                if(tinfoLocal.getLine(i).getIsKot()==1)   {   
                 if(addonId.equals(tinfoLocal.getLine(i).getAddonId()) && primaryAddon==1){
                     //changed to save with server date
-                    System.out.println("From JReasonEditor4");
                     localDlReceipts.insertCancelledKot(tinfoLocal.getId(),tinfoLocal.getTicketId(),tinfoLocal.getLine(i).getProductID(), "Y",qty,tinfoLocal.getLine(index).getKotid(),"Y","Addon Item Cancelled KOT",reasonId,tinfoLocal.getPlaceId(),tinfoLocal.getUser().getId(),tinfoLocal.getOrderId());
                   }
                }

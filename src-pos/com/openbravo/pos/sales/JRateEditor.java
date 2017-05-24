@@ -426,7 +426,7 @@ public class JRateEditor extends JDialog {
        if (discountIndex < 0 && (dRate == "" || dRate == null)) {
             JOptionPane.showMessageDialog(null, "Select Discount or Enter the Rate ");
         } else if (dReasonIndex < 0) {
-            JOptionPane.showMessageDialog(null, "Select Discount Reason");
+            JOptionPane.showMessageDialog(null, "Select Discount Category");
         } else {
             try {
                 if (discountIndex > -1) {

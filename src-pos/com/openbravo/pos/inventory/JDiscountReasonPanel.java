@@ -294,7 +294,7 @@ public class JDiscountReasonPanel extends JPanel implements JPanelView,BeanFacto
         System.out.println("index is " + index);
 
         if (index == -1) {
-            JOptionPane.showMessageDialog(JDiscountReasonPanel.this, "Please select the Reason");
+            JOptionPane.showMessageDialog(JDiscountReasonPanel.this, "Please select the Discount Category");
         } else {
             try {
                 String val = m_jReasonList.getSelectedValue().toString();

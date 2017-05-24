@@ -2,7 +2,7 @@
 //    Copyright (C) 2007-2009 Openbravo, S.L.
 //    http://www.openbravo.com/product/pos
 //
-//    This file is part of Openbravo POS.
+//    This file is part of Opebnravo POS.
 //
 //    Openbravo POS is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -51,7 +51,6 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     private static String tableId;
     private static String newTableId;
     private static String newTableName;
-
 //    private static final Icon ICO_OCU = new ImageIcon(JTicketsBag.class.getResource("/com/openbravo/images/edit_group.png"));
 //    private static final Icon ICO_FRE = new NullIcon(22, 22);
     private java.util.List<Place> m_aplaces;
@@ -62,7 +61,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     // State vars
     private Place m_PlaceClipboard;
     private CustomerInfo customer;
-    public DataLogicReceipts dlReceipts = null;
+    private DataLogicReceipts dlReceipts = null;
     private DataLogicSales dlSales = null;
     private DataLogicSystem dlSystem = null;
     private AppView m_app;
@@ -80,8 +79,9 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     private static DateFormat m_dateformat = new SimpleDateFormat("yyyy-MM-dd");
     private static DateFormat m_dateformattime = new SimpleDateFormat("HH:mm:ss");
     private static String splitId;
-     public String oldtableId;
+  public String oldtableId;
       public String movetableId;
+
 
     /**
      * Creates new form JTicketsBagRestaurant
@@ -277,8 +277,6 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     public void moveTicket() {
         logger.info("Move Ticket Action Table name: " + m_panelticket.getActiveTicket().getTableName());
         try {
-            System.out.println("Move Ticket Clickewd");
-            System.out.println("This is Old Table Id"+m_PlaceCurrent.getId());
             String currentUpdated = m_dateformat.format(m_panelticket.getActiveTicket().getObjectUpdateDate()) + " " + m_dateformattime.format(m_panelticket.getActiveTicket().getObjectUpdateDate());
             String dbUpdated = dlReceipts.getUpdatedTime(m_panelticket.getActiveTicket().getPlaceId(), m_panelticket.getActiveTicket().getSplitSharedId());
             Date currentUpdatedDate = DateFormats.StringToDateTime(currentUpdated);
@@ -301,7 +299,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                 JRetailBufferWindow.showMessage(this);
                 m_panelticket.setRetailActiveTicket(dbticket, dbticket.getTableName());
             } else {
-              //adding condition for move table not to allow if the table having zero line items
+                //adding condition for move table not to allow if the table having zero line items
                 if (m_panelticket.getActiveTicket().getLinesCount() == 0) {
                     showMessage(this, "Table cannot be moved because it has no items");
                 } //and if the table having more than 1 Bill.
@@ -323,7 +321,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                         showMessage(this, "Table cannot be moved because it has pending items not sent to KOT");
                     } else {
                         //removing all non kot items while moving the table
-                          m_panelticket.getActiveTicket().getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"exit on move"));
+                        m_panelticket.getActiveTicket().getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(), "exit on move"));
                         int i = 0;
                         while (i < m_panelticket.getActiveTicket().getLinesCount()) {
                             if (m_panelticket.getActiveTicket().getLine(i).getIsKot() == 0) {
@@ -336,11 +334,10 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                         m_panelticket.getActiveTicket().refreshTxtFields(0);
                         if (m_PlaceCurrent != null) {
                             try {
-                                System.out.println("New Id of the table where to be moved "+m_PlaceCurrent.getId());
                                 dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
-                                if (m_panelticket.getActiveTicket().getTakeaway().equals("Y")) {
-                                    dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
-                                }
+//                                if (m_panelticket.getActiveTicket().getTakeaway().equals("Y")) {
+//                                    dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
+//                                }
                             } catch (BasicException e) {
                                 logger.info("move table exception " + e.getMessage());
                                 new MessageInf(e).show(this);
@@ -409,7 +406,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
         if (m_PlaceCurrent != null) {
             try {
                 // if there is no kot items  
-                 m_panelticket.getActiveTicket().getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"exit"));
+                m_panelticket.getActiveTicket().getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(), "exit"));
                 logger.info("Table exit Action Table name: " + m_panelticket.getActiveTicket().getTableName());
                 String currentUpdated = m_dateformat.format(m_panelticket.getActiveTicket().getObjectUpdateDate()) + " " + m_dateformattime.format(m_panelticket.getActiveTicket().getObjectUpdateDate());
                 String dbUpdated = "";
@@ -421,47 +418,34 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                     logger.info("This Bill is no longer exist");
                 } else if (dbUpdatedDate.compareTo(currentUpdatedDate) > 0) {
                     showMessage(this, "The Table is being accessed by another User!Cannot update the bill");
-                      logger.info("The Table is being accessed by another User!Cannot update the bill");
+                    logger.info("The Table is being accessed by another User!Cannot update the bill");
                     int iskds = dlReceipts.getKdsUpdateStatus(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket().getSplitSharedId());
-                    System.out.println("ISKDS value"+iskds);
-                    if (iskds == 0) {
+                    if (iskds == 1) {
                         RetailTicketInfo ticket = dlReceipts.getRetailSharedTicketSplit(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket().getSplitSharedId());
                         if (ticket != null) {
                             ticket.setTicketOpen(false);
-                            System.out.println("updation for kds 0");
                             dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), ticket);
-                           // dlReceipts.updateSharedTicketTemp(m_PlaceCurrent.getId(), ticket);
-                            
-                            if (ticket.getTakeaway().equals("Y")) {
-                                dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), ticket);
-                            }
+//                            if (ticket.getTakeaway().equals("Y")) {
+//                                dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), ticket);
+//                            }
                         }
                     }
-                   /*  if (iskds == 1) {
-                        RetailTicketInfo ticket = dlReceipts.getRetailSharedTicketSplit(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket().getSplitSharedId());
-                        if (ticket != null) {
-                            ticket.setTicketOpen(false);
-                            System.out.println("updation for kds 1");
-                            //dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), ticket);
-                            dlReceipts.updateSharedTicketTemp(m_PlaceCurrent.getId(), ticket);
-                    
-                    */
                 } else {
                     if (m_panelticket.getActiveTicket().getOrderId() == 0) {
-                        logger.info("Order No." + m_panelticket.getActiveTicket().getOrderId() + " deleting 0 order no. Bill in newticket method of  "+m_panelticket.getActiveTicket().getTableName()+" id is "+m_PlaceCurrent.getId());
+                        logger.info("Order No." + m_panelticket.getActiveTicket().getOrderId() + " deleting 0 order no. Bill in newticket method of  " + m_panelticket.getActiveTicket().getTableName() + " id is " + m_PlaceCurrent.getId());
                         //             if(m_App.getProperties().getProperty("machine.reservationstatus").equals("true")){     
                         //         ReservationStatus.Reservation(m_panelticket.getActiveTicket().getTableName(),"2",m_App);
                         //         }
-                        if (m_panelticket.getActiveTicket().getTakeaway().equals("Y")) {
-                            dlReceipts.deleteTakeawayTicket(m_PlaceCurrent.getId());
-                        }
+//                        if (m_panelticket.getActiveTicket().getTakeaway().equals("Y")) {
+//                            dlReceipts.deleteTakeawayTicket(m_PlaceCurrent.getId());
+//                        }
                         dlReceipts.deleteSharedTicket(m_PlaceCurrent.getId());
                         deleteTicket();
 
 
                     }//if kot done but cancelled all lines
                     else if (m_panelticket.getActiveTicket().getOrderId() != 0 && m_panelticket.getActiveTicket().getLinesCount() == 0) {
-                       m_panelticket.getActiveTicket().setUser(m_App.getAppUserView().getUser().getUserInfo()); // El usuario que lo cobra
+                        m_panelticket.getActiveTicket().setUser(m_App.getAppUserView().getUser().getUserInfo()); // El usuario que lo cobra
                         m_panelticket.getActiveTicket().setActiveCash(m_App.getActiveCashIndex());
                         m_panelticket.getActiveTicket().setActiveDay(m_App.getActiveDayIndex());
                         m_panelticket.getActiveTicket().setDate(new Date()); //
@@ -483,7 +467,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
 //                            }
 //                              logger.info("Order No." + m_panelticket.getActiveTicket().getOrderId() + " deleting cancelled kot  non splitted bill in newticket method of  "+m_panelticket.getActiveTicket().getTableName() +" id is "+m_PlaceCurrent.getId());
 //                           dlReceipts.deleteSharedTicket(m_PlaceCurrent.getId());
-                                   deleteTicket();
+                            deleteTicket();
 
 
                         }
@@ -514,7 +498,7 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                         m_panelticket.getActiveTicket().refreshTxtFields(0);
                         m_panelticket.getActiveTicket().setTicketOpen(false);
                         if (m_panelticket.getActiveTicket().getLinesCount() == 0) {
-                              logger.info("Order No." + m_panelticket.getActiveTicket().getOrderId() + "deleting partially kot and partially non kot items Bill in newticket method of "+m_panelticket.getActiveTicket().getTableName());
+                            logger.info("Order No." + m_panelticket.getActiveTicket().getOrderId() + "deleting partially kot and partially non kot items Bill in newticket method of " + m_panelticket.getActiveTicket().getTableName());
                             if (m_panelticket.getActiveTicket().getOrderId() != 0) {
                                 m_panelticket.getActiveTicket().setUser(m_App.getAppUserView().getUser().getUserInfo()); // El usuario que lo cobra
                                 m_panelticket.getActiveTicket().setActiveCash(m_App.getActiveCashIndex());
@@ -536,17 +520,17 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
 
 
                             //added 20/09/16
-                          if (m_panelticket.getActiveTicket().getSplitValue().equals("")) {
-                            deleteTicket();
-                          }
+                            if (m_panelticket.getActiveTicket().getSplitValue().equals("")) {
+                                deleteTicket();
+                            }
 
                         } else {
                             try {
-                             //   System.out.println("take away updation-------" + m_panelticket.getActiveTicket().isTicketOpen() + "-----" + m_panelticket.getActiveTicket().getTakeaway());
+                                //   System.out.println("take away updation-------" + m_panelticket.getActiveTicket().isTicketOpen() + "-----" + m_panelticket.getActiveTicket().getTakeaway());
                                 dlReceipts.updateSharedTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
-                                if (m_panelticket.getActiveTicket().getTakeaway().equals("Y")) {
-                                   dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
-                                }
+//                                if (m_panelticket.getActiveTicket().getTakeaway().equals("Y")) {
+//                                   dlReceipts.updateTakeawayTicket(m_PlaceCurrent.getId(), m_panelticket.getActiveTicket());
+//                                }
                             } catch (BasicException e) {
                                 logger.info("newTicket updateSharedTicket exception " + e.getMessage());
                                 new MessageInf(e).show(this); // maybe other guy deleted it
@@ -570,12 +554,12 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
         // guardamos el ticket
         if (m_PlaceCurrent != null) {
             logger.info("newsplitTicket Action Table name: " + m_panelticket.getActiveTicket().getTableName());
-           ticket1.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"split"));
-           ticket2.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"split"));
-           m_panelticket.getActiveTicket().refreshTxtFields(0);
+            ticket1.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(), "split"));
+            ticket2.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(), "split"));
+            m_panelticket.getActiveTicket().refreshTxtFields(0);
             try {
-               // System.out.println("split value testing issue " + ticket1.getSplitValue() + "" + ticket2.getSplitValue());
-              //  System.out.println("bill no testing now 2" + ticket1.getLinesCount() + "" + m_PlaceCurrent.getId() + "" + ticket1.getSplitSharedId());
+                // System.out.println("split value testing issue " + ticket1.getSplitValue() + "" + ticket2.getSplitValue());
+                //  System.out.println("bill no testing now 2" + ticket1.getLinesCount() + "" + m_PlaceCurrent.getId() + "" + ticket1.getSplitSharedId());
                 ticket1.setTicketOpen(false);
                 ticket2.setTicketOpen(false);
                 System.out.println(" first" + ticket1.isTicketOpen() + ticket1.getSplitSharedId());
@@ -583,12 +567,11 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
                 dlReceipts.updateSharedSplitTicket(m_PlaceCurrent.getId(), ticket1);
                 //  splitId= UUID.randomUUID().toString().replaceAll("-", "");
                 //  ticket2.setSplitSharedId(splitId);
-                System.out.println("calling insert sahre ticket");
                 dlReceipts.insertRetailSharedTicket(m_PlaceCurrent.getId(), ticket2);
-                if (ticket1.getTakeaway().equals("Y")) {
-                    dlReceipts.updateTakeawaySplitTicket(m_PlaceCurrent.getId(), ticket1);
-                    dlReceipts.insertRetailTakeawayTicket(m_PlaceCurrent.getId(), ticket2);
-                }
+//                if (ticket1.getTakeaway().equals("Y")) {
+//                    dlReceipts.updateTakeawaySplitTicket(m_PlaceCurrent.getId(), ticket1);
+//                    dlReceipts.insertRetailTakeawayTicket(m_PlaceCurrent.getId(), ticket2);
+//                }
                 dlReceipts.insertTableCovers(UUID.randomUUID().toString(), ticket2.getPlaceId(), ticket2.getSplitSharedId(), ticket1.getNoOfCovers());
             } catch (BasicException e) {
                 logger.info("newsplitTicket insertRetailSharedTicket exception " + e.getMessage());
@@ -605,12 +588,12 @@ public class JRetailTicketsBagRestaurantMap extends JRetailTicketsBag {
     public void deleteTicket() {
 
         if (m_PlaceCurrent != null) {
-logger.info( "clearing the table in deleteTicket method of map ");
-          //  String id = m_PlaceCurrent.getId();
-           // try {
-           //    logger.info( "deleting sharedticket in deleteTicket method of Table Id "+id);
-             //   dlReceipts.deleteSharedTicket(id);
-                m_PlaceCurrent.setPeople(false);
+            logger.info("clearing the table in deleteTicket method of map ");
+            //  String id = m_PlaceCurrent.getId();
+            // try {
+            //    logger.info( "deleting sharedticket in deleteTicket method of Table Id "+id);
+            //   dlReceipts.deleteSharedTicket(id);
+            m_PlaceCurrent.setPeople(false);
 
 //            } catch (BasicException e) {
 //                logger.info("deleteTicket in map class exception " + e.getMessage());
@@ -674,7 +657,7 @@ logger.info( "clearing the table in deleteTicket method of map ");
                     }
                     logger.info("The Table is being accessed by another User!Cannot update the bill");
                     m_panelticket.setRetailActiveTicket(dbticket, dbticket.getTableName());
-                   } else {
+                } else {
                     showMessage(this, "This Bill is no longer exist");
                     logger.info("This Bill is no longer exist");
                     //m_panelticket.getActiveTicket().getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"exit"));
@@ -682,34 +665,34 @@ logger.info( "clearing the table in deleteTicket method of map ");
                 }
             } else {
                 if (JCancelReasonEditor.getFlag() == true) {
-                    ticket.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"exit on cancel"));
+                    ticket.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(), "exit on cancel"));
                     if (!ticket.getMomoePhoneNo().equals("")) {
                         logger.info("Order No. " + ticket.getOrderId() + "Paasing the product information to Momoe in deleteCancelTicket method of Map class ;");
                         MomoePayment.MomoeIntegration(null, ticket, null, m_App, true, dlSales);
                     }
-                   // try {
-                        if (ticket.getSplitValue().equals("Split")) {
+                    // try {
+                    if (ticket.getSplitValue().equals("Split")) {
 //                            if (ticket.getTakeaway().equals("Y")) {
 //                                dlReceipts.deleteTakeawaySplitTicket(id, ticket.getSplitSharedId());
 //                            }
 //                              logger.info("Order No." + ticket.getOrderId() + " deleting the splitted Bill in deletecancel method of "+ticket.getTableName()+" and table id is "+id);
 //                            dlReceipts.deleteSharedSplitTicket(id, ticket.getSplitSharedId());
-                            m_PlaceCurrent.setPeople(true);
-                        } else {
-                            if (m_App.getProperties().getProperty("machine.reservationstatus").equals("true")) {
-                                ReservationStatus.Reservation(ticket.getTableName(), "2", m_App);
-                            }
+                        m_PlaceCurrent.setPeople(true);
+                    } else {
+                        if (m_App.getProperties().getProperty("machine.reservationstatus").equals("true")) {
+                            ReservationStatus.Reservation(ticket.getTableName(), "2", m_App);
+                        }
 //                            if (ticket.getTakeaway().equals("Y")) {
 //                                dlReceipts.deleteTakeawayTicket(id);
 //                            }
 //                            logger.info("Order No." + ticket.getOrderId() + " deleting the non splitted Bill in deletecancel method of "+ticket.getTableName()+" and table id is "+id);
 //                            dlReceipts.deleteSharedTicket(id);
-                            m_PlaceCurrent.setPeople(false);
-                        }
-                        m_PlaceCurrent = null;
-                        printState();
-                        m_panelticket.setRetailActiveTicket(null, null);
-                        loadTickets();
+                        m_PlaceCurrent.setPeople(false);
+                    }
+                    m_PlaceCurrent = null;
+                    printState();
+                    m_panelticket.setRetailActiveTicket(null, null);
+                    loadTickets();
 
 //                    } catch (BasicException e) {
 //                        logger.info("deletecancelTicket in map class exception " + e.getMessage());
@@ -835,7 +818,7 @@ logger.info( "clearing the table in deleteTicket method of map ");
         } catch (BasicException e) {
             logger.info("loadTickets in map class exception " + e.getMessage());
             checkDbConnection();
-         //   new MessageInf(e).show(this);
+            //   new MessageInf(e).show(this);
         }
 
         //Iterate of all the tables present in this floor.
@@ -909,7 +892,7 @@ logger.info( "clearing the table in deleteTicket method of map ");
             ticket = dlReceipts.getRetailSharedTicket(place.getId());
         } catch (BasicException e) {
             logger.info("getTicketInfo in map class exception " + e.getMessage());
-         //   new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this);
+            //   new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this);
             return null;
         }
         System.out.println("retriving content from  db" + ticket);
@@ -945,14 +928,14 @@ logger.info( "clearing the table in deleteTicket method of map ");
             ticket = dlReceipts.getRetailSharedTicketSplit(place.getId(), splitId);
         } catch (BasicException e) {
             logger.info("getTicketInfo in map class exception " + e.getMessage());
-           // new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this);
+            // new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this);
             return null;
         }
         return ticket;
     }
 
     private void setActivePlace(Place place, RetailTicketInfo ticket) {
-System.out.println("After setactive place in Jretailticketbagresta..map "+ticket.getPlaceId()+".."+ticket.getOldTableName());
+
         System.out.println("m_PlaceCurrent --" + place.hasPeople());
         ticket.setM_App(m_App);
         this.retailTicket = ticket;
@@ -961,8 +944,7 @@ System.out.println("After setactive place in Jretailticketbagresta..map "+ticket
         if (place.hasPeople() == false) {
             System.out.println("place.hasPeople() 1");
             setStatus(true);
-            JTableCover.showMessage(JRetailTicketsBagRestaurantMap.this, dlReceipts, 
-                    ticket, place, m_panelticket, this, true, getSplitId());
+            JTableCover.showMessage(JRetailTicketsBagRestaurantMap.this, dlReceipts, ticket, place, m_panelticket, this, true, getSplitId());
 //              if(m_App.getProperties().getProperty("machine.reservationstatus").equals("true")){   
 //              ReservationStatus.Reservation(place.getName(),"3",m_App);   
 //             }
@@ -974,6 +956,7 @@ System.out.println("After setactive place in Jretailticketbagresta..map "+ticket
                 if (m_App.getProperties().getProperty("machine.reservationstatus").equals("true")) {
                     ReservationStatus.Reservation(ticket.getTableName(), "2", m_App);
                 }
+                
                 //added here instead of setretailactiveticket 13/06/2016
                 if (!ticket.getMomoePhoneNo().equals("")) {
                     SentenceList senttax = dlSales.getRetailTaxList();
@@ -988,7 +971,7 @@ System.out.println("After setactive place in Jretailticketbagresta..map "+ticket
                     MomoePayment.MomoeIntegration(ticket.getLines(), ticket, taxlist, m_App, false, dlSales);
                 }
 
-logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with order id "+ticket.getOrderId());
+                logger.info("The Table has been moved to : " + m_PlaceCurrent.getName() + " with order id " + ticket.getOrderId());
                 m_panelticket.setRetailActiveTicket(ticket, m_PlaceCurrent.getName());
                 //    ticket.setPlaceid(getNewTableId());
                 setTable(getNewTableName());
@@ -1017,15 +1000,15 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                         String splitId = JSplitBillPanel.showMessage(JRetailTicketsBagRestaurantMap.this, dlReceipts, splitticket, place, m_panelticket);
                         ticket = getTicketInfo(place, splitId);
                         if (ticket != null) {
-                             logger.info("( Entering splitted table): " + place.getName() + " having lines of " + ticket.getLinesCount() + " and  order number is " +ticket.getOrderId());
+                            logger.info("( Entering splitted table): " + place.getName() + " having lines of " + ticket.getLinesCount() + " and  order number is " + ticket.getOrderId());
                             ticket.setTicketOpen(true);
                             ticket.setPlaceid(place.getId());
                             //added newly (removed from setretailactive ticket and put here
                             try {
                                 dlReceipts.updateSharedTicket(place.getId(), ticket);
-                                if (ticket.getTakeaway().equals("Y")) {
-                                    dlReceipts.updateTakeawayTicket(place.getId(), ticket);
-                                }
+//                                if (ticket.getTakeaway().equals("Y")) {
+//                                    dlReceipts.updateTakeawayTicket(place.getId(), ticket);
+//                                }
                             } catch (BasicException ex) {
                                 Logger.getLogger(JRetailTicketsBagRestaurantMap.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -1161,7 +1144,6 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
         }
 
         public void actionPerformed(ActionEvent evt) {
-            
             System.out.println("11");
             if (m_PlaceClipboard == null) {
                 System.out.println("12");
@@ -1175,42 +1157,32 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                     // if not people or new table
                     if (ticket == null && !m_place.hasPeople()) {
                         // Empty table and checked
-                        logger.info(m_App.getAppUserView().getUser().getName().toString() + " is trying to login the new table "+m_place.getName());
+                        logger.info(m_App.getAppUserView().getUser().getName().toString() + " is trying to login the new table " + m_place.getName());
                         // table occupied
                         ticket = new RetailTicketInfo();
-                           ArrayList<AccessInfo> accessInfo =new ArrayList<AccessInfo>();
-                       accessInfo.add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"new entry"));
+                        ArrayList<AccessInfo> accessInfo = new ArrayList<AccessInfo>();
+                        accessInfo.add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(), "new entry"));
                         ticket.setAccessInfo(accessInfo);
 //                        m_place.setPeople(true);
                         //to indicate that this is take away ticket
                         ticket.setTakeaway(m_place.getTakeaway());
                         ticket.setTicketOpen(true);
                         ticket.setUser(m_App.getAppUserView().getUser().getUserInfo());
-       
                         ticket.setPlaceid(m_place.getId());
                         ticket.setObjectUpdateDate(new Date());
-                        
-
                         try {
-                            System.out.println("calling insert shareticket");
                             dlReceipts.insertRetailSharedTicket(m_place.getId(), ticket);
-                             //System.out.println("calling insert sharetickettemp");
-                           // dlReceipts.insertRetailSharedTicketTemp(m_place.getId(), ticket);
-                            
-                            if (ticket.getTakeaway().equals("Y")) {
-                                dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticket);
-                            }
-                                  
-                              System.out.println("Before setactive place in JRetailticketbagresta..map11");
-                           // System.out.println("calling insert sharetickettemp");                           
-                             setActivePlace(m_place, ticket);
+//                            if (ticket.getTakeaway().equals("Y")) {
+//                                dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticket);
+//                            }
+                            setActivePlace(m_place, ticket);
                         } catch (BasicException e) {
                             logger.info("actionPerformed in map class exception 1 " + e.getMessage());
                             checkDbConnection();
-                         //   new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this); // Glup. But It was empty.
+                            //   new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this); // Glup. But It was empty.
                         }
 
-                       
+
 
                     } //will never occur? occurs before refreshing
                     else if (ticket == null && m_place.hasPeople()) {
@@ -1256,25 +1228,24 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                         if (splitticket.size() == 1) {
                             System.out.println(ticket.isTicketOpen());
                             if (ticket.isTicketOpen()) {
-                                logger.info("(Cant Enter): " + m_place.getName() + " Table is occupied by " + ticket.printUser() + " printed the lines " + ticket.getLinesCount() + " and " + m_App.getAppUserView().getUser().getName().toString() + " is trying to login the table and order no is "+ticket.getOrderId());
+                                logger.info("(Cant Enter): " + m_place.getName() + " Table is occupied by " + ticket.printUser() + " printed the lines " + ticket.getLinesCount() + " and " + m_App.getAppUserView().getUser().getName().toString() + " is trying to login the table and order no is " + ticket.getOrderId());
                                 JOptionPane.showMessageDialog(JRetailTicketsBagRestaurantMap.this, ticket.printUser() + " has already logged in this Table!", "Order in Progress", JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             }
-                             ticket.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(),"entry"));
-                             logger.info("(Entering): " + m_place.getName() + " Table is occupied by " + ticket.printUser() + " printed the lines " + ticket.getLinesCount() + " and " + m_App.getAppUserView().getUser().getName().toString() + " is trying to login the table and order no is "+ticket.getOrderId());
+                            ticket.getAccessInfo().add(new AccessInfo(m_App.getProperties().getPosNo(), m_App.getAppUserView().getUser().getName(), new Date(), "entry"));
+                            logger.info("(Entering): " + m_place.getName() + " Table is occupied by " + ticket.printUser() + " printed the lines " + ticket.getLinesCount() + " and " + m_App.getAppUserView().getUser().getName().toString() + " is trying to login the table and order no is " + ticket.getOrderId());
                             ticket.setUser(m_App.getAppUserView().getUser().getUserInfo());
                             ticket.setTicketOpen(true);
                             try {
                                 dlReceipts.updateSharedTicket(m_place.getId(), ticket);
-                                if (ticket.getTakeaway().equals("Y")) {
-                                    dlReceipts.updateTakeawayTicket(m_place.getId(), ticket);
-                                }
+//                                if (ticket.getTakeaway().equals("Y")) {
+//                                    dlReceipts.updateTakeawayTicket(m_place.getId(), ticket);
+//                                }
                             } catch (BasicException ex) {
                                 logger.info("actionPerformed in map class exception 2 " + ex.getMessage());
                                 Logger.getLogger(JRetailTicketsBagRestaurantMap.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
-                          System.out.println("Before setactive place in JRetailticketbagresta..map22");
                         setActivePlace(m_place, ticket);
                         //    }
                         //  }
@@ -1317,7 +1288,7 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
 
                         m_PlaceClipboard = null;
                         customer = null;
-  System.out.println("Before setactive place in JRetailticketbagresta..map33");
+
                         setActivePlace(m_place, ticket);
                     } else {
                         // TODO: msg: The table is now full
@@ -1346,7 +1317,6 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                         m_PlaceClipboard = null;
                         customer = null;
                         printState();
-                          System.out.println("Before setactive place in Jretailticketbagresta..map44");
                         setActivePlace(placeclip, ticketclip);
                     } else if (!m_place.hasPeople()) {
                         // Moving the receipt to an empty table
@@ -1368,20 +1338,16 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
                                 }
                                 ticketclip.setPlaceid(getNewTableId());
                                 ticketclip.setNoOfCovers(getTableCovers(getNewTableId(), ticketclip.getSplitSharedId()));
-                                System.out.println("insert sharedtickets");
                                 dlReceipts.insertRetailSharedTicket(m_place.getId(), ticketclip);
                                 m_place.setPeople(true);
-                                  logger.info("Order No." + ticketclip.getOrderId() + "deleting moved Bill in actionperformed method of "+ticketclip.getOldTableName()+" and id is "+m_PlaceClipboard.getId());
+                                logger.info("Order No." + ticketclip.getOrderId() + "deleting moved Bill in actionperformed method of " + ticketclip.getOldTableName() + " and id is " + m_PlaceClipboard.getId());
                                 dlReceipts.deleteSharedTicket(m_PlaceClipboard.getId());
-                                if (ticketclip.getTakeaway().equals("Y")) {
-                                    dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticketclip);
-                                   // dlReceipts.deleteTakeawayTicket(m_PlaceClipboard.getId());
-                                    System.out.println("deleting previous table id:"+m_PlaceClipboard.getId());
-
-                                     oldtableId=m_PlaceClipboard.getId();
-                                      //System.out.println("deleting previous table id:"+oldTableId);
-
-                                }
+//                                if (ticketclip.getTakeaway().equals("Y")) {
+//                                    dlReceipts.insertRetailTakeawayTicket(m_place.getId(), ticketclip);
+//                                    dlReceipts.deleteTakeawayTicket(m_PlaceClipboard.getId());
+//                                }
+                                oldtableId=m_PlaceClipboard.getId();
+                                
                                 m_PlaceClipboard.setPeople(false);
                                 setNewTableName(m_place.getName());
                                 setOldTableId(m_PlaceClipboard.getId());
@@ -1396,14 +1362,11 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
 
                             // No hace falta preguntar si estaba bloqueado porque ya lo estaba antes
                             // activamos el ticket seleccionado
-
-                             System.out.println("Before setactive place in Jretailticketbagresta..map55"+"\n old Id ref"+ oldtableId);
-                            System.out.println("After setactive place in Jretailticketbagresta..map55"+"\n new Id ref"+ ticketclip.getPlaceId());
-                            movetableId=ticketclip.getPlaceId();
-                            try{
-                            dlReceipts.updateServedTransactionMoveAsModify(ticketclip,movetableId,oldtableId,"MODIFY");
-
-                            }catch (BasicException e) {
+                        movetableId=ticketclip.getPlaceId();
+                            try {
+                                dlReceipts.updateServedTransactionMoveAsModify(ticketclip,movetableId,oldtableId,"MODIFY");
+                                //dlReceipts.updateServedTransactionMoveAsModify(oldTableID, "MODIFY");
+                            } catch (BasicException e) {
                                 logger.info("actionPerformed in map class exception 10 " + e.getMessage());
                                 new MessageInf(e).show(JRetailTicketsBagRestaurantMap.this); // Glup. But It was empty.
                             }
@@ -1491,6 +1454,7 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
         m_jbtnRefresh = new javax.swing.JButton();
         m_jText = new javax.swing.JLabel();
         m_jbtnLogout = new javax.swing.JButton();
+        jButtonOpenCloseCash = new javax.swing.JButton();
 
         setLayout(new java.awt.CardLayout());
 
@@ -1532,18 +1496,28 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
             }
         });
 
+        jButtonOpenCloseCash.setText("Open/Close Cash");
+        jButtonOpenCloseCash.setPreferredSize(new java.awt.Dimension(107, 38));
+        jButtonOpenCloseCash.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonOpenCloseCashActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(m_jbtnReservations)
-                .addGap(5, 5, 5)
+                .addComponent(m_jbtnReservations, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(m_jbtnRefresh)
-                .addGap(5, 5, 5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonOpenCloseCash, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(177, 177, 177)
                 .addComponent(m_jText)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(m_jbtnLogout)
                 .addContainerGap())
         );
@@ -1551,15 +1525,16 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(m_jbtnReservations))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(m_jbtnRefresh)
-                    .addComponent(m_jbtnLogout)))
+                .addComponent(m_jbtnLogout))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(m_jText))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(m_jbtnReservations)
+                    .addComponent(m_jbtnRefresh)
+                    .addComponent(jButtonOpenCloseCash, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -1583,17 +1558,17 @@ logger.info("The Table has been moved to : " + m_PlaceCurrent.getName()+" with o
     }// </editor-fold>//GEN-END:initComponents
 
     private void m_jbtnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jbtnRefreshActionPerformed
-logger.info("Refresh action performed in map class");
-      if(  m_PlaceClipboard != null){
-        try {
-             logger.info("The table "+m_PlaceClipboard.getName()+" was tried to moved");
-            RetailTicketInfo ticketclip = getTicketInfo(m_PlaceClipboard);
-            ticketclip.setTicketOpen(false);
-            dlReceipts.updateSharedTicket(m_PlaceClipboard.getId(), ticketclip);
-        } catch (BasicException ex) {
-            Logger.getLogger(JRetailTicketsBagRestaurantMap.class.getName()).log(Level.SEVERE, null, ex);
+        logger.info("Refresh action performed in map class");
+        if (m_PlaceClipboard != null) {
+            try {
+                logger.info("The table " + m_PlaceClipboard.getName() + " was tried to moved");
+                RetailTicketInfo ticketclip = getTicketInfo(m_PlaceClipboard);
+                ticketclip.setTicketOpen(false);
+                dlReceipts.updateSharedTicket(m_PlaceClipboard.getId(), ticketclip);
+            } catch (BasicException ex) {
+                Logger.getLogger(JRetailTicketsBagRestaurantMap.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-      }
         m_PlaceClipboard = null;
         customer = null;
         loadTickets();
@@ -1608,9 +1583,8 @@ logger.info("Refresh action performed in map class");
             loadTickets();
         }
     }
-    
-    
-   public void checkDbConnection() {
+
+    public void checkDbConnection() {
         showMessage(this, "LAN connection is down. Please do the operations after sometime");
         m_RootApp = (JRootApp) m_App;
         m_RootApp.closeAppView();
@@ -1626,22 +1600,28 @@ logger.info("Refresh action performed in map class");
     }//GEN-LAST:event_m_jbtnReservationsActionPerformed
 
     private void m_jbtnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jbtnLogoutActionPerformed
-     logger.info("logout actionPerformed in map class");
-        if(  m_PlaceClipboard != null){
-        try {
-             logger.info("The table "+m_PlaceClipboard.getName()+" was tried to moved");
-            RetailTicketInfo ticketclip = getTicketInfo(m_PlaceClipboard);
-            ticketclip.setTicketOpen(false);
-            dlReceipts.updateSharedTicket(m_PlaceClipboard.getId(), ticketclip);
-        } catch (BasicException ex) {
-            Logger.getLogger(JRetailTicketsBagRestaurantMap.class.getName()).log(Level.SEVERE, null, ex);
+        logger.info("logout actionPerformed in map class");
+        if (m_PlaceClipboard != null) {
+            try {
+                logger.info("The table " + m_PlaceClipboard.getName() + " was tried to moved");
+                RetailTicketInfo ticketclip = getTicketInfo(m_PlaceClipboard);
+                ticketclip.setTicketOpen(false);
+                dlReceipts.updateSharedTicket(m_PlaceClipboard.getId(), ticketclip);
+            } catch (BasicException ex) {
+                Logger.getLogger(JRetailTicketsBagRestaurantMap.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            m_PlaceClipboard = null;
         }
-          m_PlaceClipboard=null;
-    }
-       m_RootApp = (JRootApp) m_App;
+        m_RootApp = (JRootApp) m_App;
         m_RootApp.closeAppView();
     }//GEN-LAST:event_m_jbtnLogoutActionPerformed
+
+    private void jButtonOpenCloseCashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOpenCloseCashActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonOpenCloseCashActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonOpenCloseCash;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel m_jPanelMap;

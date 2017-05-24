@@ -321,7 +321,7 @@ public class JTableCover extends JDialog {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (isNewTable) {
             try {
-                 logger.info("Order No :" +tinfoLocal.getOrderId() + "  Deleting Ticket by closing cover window of Table : " +JTableCover.place.getName() + "  Id : "+ tinfoLocal.getPlaceId());
+                logger.info("Order No :" +tinfoLocal.getOrderId() + "  Deleting Ticket by closing cover window of Table : " +JTableCover.place.getName() + "  Id : "+ tinfoLocal.getPlaceId());
                     localDlReceipts.deleteSharedTicket(JTableCover.place.getId());
             } catch (BasicException ex) {
                 Logger.getLogger(JTableCover.class.getName()).log(Level.SEVERE, null, ex);

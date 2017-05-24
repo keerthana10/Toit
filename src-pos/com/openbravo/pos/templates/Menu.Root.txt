@@ -117,8 +117,6 @@ group = menu.addGroup("Menu.Reports");
 		//submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.CancelBill", "/com/sysfore/CancelBillReport.bs");
 		submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.CancelledBill", "/com/sysfore/CancelledBill.bs");
                    //submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.SettlementReport", "/com/sysfore/SettlementReport.bs");
-                 submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.TestReport", "/com/sysfore/TestReport.bs");
-                 submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.TicketTableReport", "/com/sysfore/TicketTableReport.bs");
                    submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.SalesDetailsReport", "/com/sysfore/SalesDetailsReport.bs");
                    submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.SettlementReport", "/com/sysfore/SettlementWithSectionReport.bs");
     submenu.addPanel("/com/openbravo/images/appointment.png", "Menu.SettlementSectionReport", "/com/sysfore/SettlementSectionReport.bs");

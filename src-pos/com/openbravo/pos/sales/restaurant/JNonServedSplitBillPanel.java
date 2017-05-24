@@ -200,7 +200,6 @@ public class JNonServedSplitBillPanel extends JDialog implements ListSelectionLi
                 else
                  jTable3.setValueAt( 1, row, 3);
             } 
-          
          jTable3.getSelectionModel().setSelectionInterval( 0, 0 );
        }
     /**

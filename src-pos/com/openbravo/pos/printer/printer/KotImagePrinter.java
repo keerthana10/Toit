@@ -63,12 +63,12 @@ public class KotImagePrinter {
       job.setPrintable(contentToPrint, pageFormat);
       PrintService[] services = PrinterJob.lookupPrintServices();
 
-        System.out.println("services---"+services.length);
+      //  System.out.println("services---"+services.length);
     // Retrieve specified print service from the array
         for (PrintService s : services) {
-        System.out.println("s.getName()--"+s.getName());
+    //    System.out.println("s.getName()--"+s.getName());
         if (s.getName().equalsIgnoreCase(printername)) {
-               System.out.println("s.eneter inside()--"+s.getName());
+        //       System.out.println("s.eneter inside()--"+s.getName());
              //  kotlogger.info("Printer name is :"+s.getName());
 //               if(s.getName().equalsIgnoreCase("Generic-text-only"))
 //               {

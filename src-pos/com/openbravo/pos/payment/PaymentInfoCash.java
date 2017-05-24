@@ -94,4 +94,8 @@ public class PaymentInfoCash extends PaymentInfo {
         return li;
         
     }
+
+    @Override
+    public String getMobile() {
+  return "";    }
 }

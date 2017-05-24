@@ -258,7 +258,7 @@ public class JNonServedLinesPanel extends JPanel implements JPanelView, BeanFact
             if (splitId == null) {
              ticket = dlSales.getNonServedLinesTicket(tableId);
             } else{
-            ticket = dlSales.getSplitNonServedLinesTicket(tableId, splitId);
+             ticket = dlSales.getSplitNonServedLinesTicket(tableId, splitId);
             }
             List<RetailTicketLineInfo> ticketLines = ticket.getLines();
             List<RetailTicketLineInfo> nonServedLines = new ArrayList<RetailTicketLineInfo>();
@@ -277,7 +277,7 @@ public class JNonServedLinesPanel extends JPanel implements JPanelView, BeanFact
 
             }
             Collections.sort(nonServedLines,CustomComparator);
-           ticket.setNonServedLines(nonServedLines);
+            ticket.setNonServedLines(nonServedLines);
             String sresourcename = "Printer.NonServedLines";
             buttonExecute.setEnabled(ticket != null);
             m_TP.getDevicePrinter("1").reset();

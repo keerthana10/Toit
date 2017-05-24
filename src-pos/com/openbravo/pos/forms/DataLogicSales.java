@@ -54,6 +54,8 @@ import com.openbravo.pos.payment.VouchersList;
 import com.openbravo.pos.sales.JPlacesInfo;
 import com.openbravo.pos.sales.ProcessInfo;
 import com.openbravo.pos.sales.ProductionAreaInfo;
+import com.openbravo.pos.sales.Reasoninfo;
+import com.openbravo.pos.sales.SharedTicketInfo;
 import com.openbravo.pos.ticket.FindTicketsInfo;
 import com.openbravo.pos.ticket.MenuInfo;
 import com.openbravo.pos.ticket.ResettlePaymentInfo;
@@ -153,7 +155,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
 
     public final ProductInfoExt getProductInfoByCode(String sCode) throws BasicException {
         return (ProductInfoExt) new PreparedSentence(s, "SELECT P.ID, P.REFERENCE, P.CODE, P.NAME, P.ISCOM, P.ISSCALE, P.PRICEBUY, P.PRICESELL, P.TAXCAT, P.CATEGORY, P.ATTRIBUTESET_ID, P.IMAGE, P.ATTRIBUTES, P.ITEMCODE, P.MRP,U.NAME,P.PRODUCTTYPE,P.PRODUCTIONAREATYPE,P.SERVICECHARGE,P.SERVICETAX,C.PARENTID,P.PREPARATIONTIME,P.STATION,P.ISCOMBOPRODUCT   "
-                + "FROM PRODUCTS P,UOM U,CATEGORIES C  WHERE U.ID=P.UOM AND P.CATEGORY=C.ID AND  P.CODE = ? AND P.ISACTIVE='Y' AND P.ISSALESITEM='Y'  ", SerializerWriteString.INSTANCE, ProductInfoExt.getSerializerRead()).find(sCode);
+                + "FROM PRODUCTS P,UOM U,CATEGORIES C  WHERE U.ID=P.UOM AND P.CATEGORY=C.ID AND  P.CODE = ? AND P.ISACTIVE='Y' AND P.ISSALESITEM='Y'   ", SerializerWriteString.INSTANCE, ProductInfoExt.getSerializerRead()).find(sCode);
     }
 
     public final List<ProductInfoExt> getProductInfoByItemCode(String id) throws BasicException {
@@ -356,7 +358,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
 //            , new SerializerWriteBasic(new Datas[] {Datas.OBJECT, Datas.INT, Datas.OBJECT, Datas.INT, Datas.OBJECT, Datas.DOUBLE, Datas.OBJECT, Datas.TIMESTAMP, Datas.OBJECT, Datas.TIMESTAMP, Datas.OBJECT, Datas.STRING, Datas.OBJECT, Datas.STRING})
 //            , new SerializerReadClass(FindTicketsInfo.class));
 //    }
-    //User list
+//User list
     public final SentenceList getUserList() {
         return new StaticSentence(s, "SELECT ID, NAME FROM PEOPLE ORDER BY NAME", null, new SerializerRead() {
             public Object readValues(DataRead dr) throws BasicException {
@@ -1517,7 +1519,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
                     });
                 }
 //
-                SentenceExec paymentinsert = new PreparedSentence(s, "INSERT INTO PAYMENTS (ID, RECEIPT, PAYMENT, TOTAL, TRANSID, RETURNMSG, CHEQUENOS, STAFF) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", SerializerWriteParams.INSTANCE);
+                SentenceExec paymentinsert = new PreparedSentence(s, "INSERT INTO PAYMENTS (ID, RECEIPT, PAYMENT, TOTAL, TRANSID, RETURNMSG, CHEQUENOS, STAFF,PAYMENTTYPE,MOBILENUM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)", SerializerWriteParams.INSTANCE);
 
                 SentenceExec paymentsplits = new PreparedSentence(s, "INSERT INTO PAYMENTSPLITS (ID, PAYMENTS_ID, IDENTIFIER , AMOUNT) VALUES (?, ?, ?, ?)", SerializerWriteParams.INSTANCE);
                 SentenceExec updateCreditNote = new PreparedSentence(s, "UPDATE CREDITNOTE SET STATUS = ? WHERE CREDITNOTENO=?", SerializerWriteParams.INSTANCE);
@@ -1544,6 +1546,8 @@ public class DataLogicSales extends BeanFactoryDataSingle {
                                 setString(7, "");
                                 setString(8, "");
                             }
+                            setString(9, p.getVoucherNo());
+                            setString(10, p.getMobile());
                         }
                     });
 
@@ -1912,17 +1916,17 @@ public class DataLogicSales extends BeanFactoryDataSingle {
 
                 }
                 if (!ticket.getSplitValue().equals("Split")) {
-                    if (ticket.getTakeaway().equals("Y")) {
-                        deleteTakeawayTicket(ticket.getPlaceId());
-                    }
+//                    if (ticket.getTakeaway().equals("Y")) {
+//                        deleteTakeawayTicket(ticket.getPlaceId());
+//                    }
                     logger.info("Order No." + ticket.getOrderId() + " deleting shared ticket after cancel bill of table " + ticket.getTableName() + " id is " + ticket.getPlaceId());
                     deleteSharedTicket(ticket.getPlaceId());
 
 
                 } else {
-                    if (ticket.getTakeaway().equals("Y")) {
-                        deleteTakeawaySplitTicket(ticket.getPlaceId(), ticket.getSplitSharedId());
-                    }
+//                    if (ticket.getTakeaway().equals("Y")) {
+//                        deleteTakeawaySplitTicket(ticket.getPlaceId(), ticket.getSplitSharedId());
+//                    }
                     logger.info("Order No." + ticket.getOrderId() + " deleting shared ticket after cancel bill of splitted table " + ticket.getTableName() + " id is " + ticket.getPlaceId());
                     deleteSharedSplitTicket(ticket.getPlaceId(), ticket.getSplitSharedId());
                 }
@@ -3629,9 +3633,6 @@ public class DataLogicSales extends BeanFactoryDataSingle {
                         }
                     });
                     printlogger.info("Bill Printed Successfully  " + "," + "Username: " + ticket.printUser() + "," + "Total kot count: " + ticket.getLinesCount() + "," + "Kot No: " + l.getKotid() + "," + "Table: " + ticket.getTableName() + "," + "Order No: " + ticket.getOrderId() + "," + "Product Name: " + l.getProductName() + "," + "Qty: " + l.getMultiply() + "," + "Timestamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
-                   // System.out.println("old OrderItem Id"+splitTicket.getLine(i).getTbl_orderId()+"New orderItemId"+tbl_orderitemId);
-               // System.out.println("kot id "+splitTicket.getLine(i).getKotid());
-                //dlReceipts.updateServedTransactionSplit(ticket,ticket.getPlaceId(),splitTicket.getLine(i).getTbl_orderId(),tbl_orderitemId,oldordernum,newordernum);
                 }
 
                 return null;
@@ -3750,12 +3751,12 @@ public class DataLogicSales extends BeanFactoryDataSingle {
         });
     }
 
-    public void insertPosActionsAccess(String roleid, String printAccess, String settleAccess, String cancelAccess, String discountAccess, String splitAccess, String moveTableAccess) {
+    public void insertPosActionsAccess(String roleid, String printAccess, String settleAccess, String cancelAccess, String discountAccess, String splitAccess, String moveTableAccess, String serviceChargeExempt) {
         String id = UUID.randomUUID().toString();
-        Object[] values = new Object[]{id, roleid, printAccess, settleAccess, cancelAccess, discountAccess, splitAccess, moveTableAccess};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        Object[] values = new Object[]{id, roleid, printAccess, settleAccess, cancelAccess, discountAccess, splitAccess, moveTableAccess, serviceChargeExempt};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
         try {
-            new PreparedSentence(s, "INSERT INTO POSACTIONSACCESS (ID, ROLEID, PRINTACCESS,SETTLEACCESS,CANCELACCESS,DISCOUNTACCESS,SPLITACCESS,MOVETABLEACCESS) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7})).exec(values);
+            new PreparedSentence(s, "INSERT INTO POSACTIONSACCESS (ID, ROLEID, PRINTACCESS,SETTLEACCESS,CANCELACCESS,DISCOUNTACCESS,SPLITACCESS,MOVETABLEACCESS,CHARGEACCESS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8})).exec(values);
         } catch (BasicException ex) {
             Logger.getLogger(DataLogicSales.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -3763,13 +3764,13 @@ public class DataLogicSales extends BeanFactoryDataSingle {
 
     }
 
-    public void updatePosActionsAccess(String roleId, String printAccess, String settleAccess, String cancelAccess, String discountAccess, String splitAccess, String moveTableAccess) {
+    public void updatePosActionsAccess(String roleId, String printAccess, String settleAccess, String cancelAccess, String discountAccess, String splitAccess, String moveTableAccess, String serviceChargeExempt) {
 
         Object[] values = null;
-        values = new Object[]{roleId, printAccess, settleAccess, cancelAccess, discountAccess, splitAccess, moveTableAccess};
-        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
+        values = new Object[]{roleId, printAccess, settleAccess, cancelAccess, discountAccess, splitAccess, moveTableAccess, serviceChargeExempt};
+        Datas[] datas = new Datas[]{Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING, Datas.STRING};
         try {
-            new StaticSentence(s, "UPDATE POSACTIONSACCESS SET PRINTACCESS =? ,SETTLEACCESS =? ,CANCELACCESS =? ,DISCOUNTACCESS =?, SPLITACCESS =?, MOVETABLEACCESS =? WHERE ROLEID = ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 3, 4, 5, 6, 0})).exec(values);
+            new StaticSentence(s, "UPDATE POSACTIONSACCESS SET PRINTACCESS =? ,SETTLEACCESS =? ,CANCELACCESS =? ,DISCOUNTACCESS =?, SPLITACCESS =?, MOVETABLEACCESS =? , CHARGEACCESS=?  WHERE ROLEID = ? ", new SerializerWriteBasicExt(datas, new int[]{1, 2, 3, 4, 5, 6, 7, 0})).exec(values);
         } catch (BasicException ex) {
             Logger.getLogger(DataLogicSystem.class.getName()).log(Level.SEVERE, null, ex);
 
@@ -3866,7 +3867,7 @@ public class DataLogicSales extends BeanFactoryDataSingle {
 
     public List<PosActionsInfo> getPosActions(String roleId) throws BasicException {
 
-        return (List<PosActionsInfo>) new StaticSentence(s, "SELECT PRINTACCESS, SETTLEACCESS, CANCELACCESS,DISCOUNTACCESS,SPLITACCESS, MOVETABLEACCESS FROM POSACTIONSACCESS WHERE ROLEID='" + roleId + "' ", null, new SerializerReadClass(PosActionsInfo.class)).list();
+        return (List<PosActionsInfo>) new StaticSentence(s, "SELECT PRINTACCESS, SETTLEACCESS, CANCELACCESS,DISCOUNTACCESS,SPLITACCESS, MOVETABLEACCESS, CHARGEACCESS  FROM POSACTIONSACCESS WHERE ROLEID='" + roleId + "' ", null, new SerializerReadClass(PosActionsInfo.class)).list();
     }
 
     public List<ProductionAreaTypeInfo> getProductionAreaTypeList() throws BasicException {
@@ -4226,9 +4227,6 @@ public class DataLogicSales extends BeanFactoryDataSingle {
                 pdtLeastPriceList = new ArrayList<BuyGetPriceInfo>();
                 for (final RetailTicketLineInfo l : ticket.getLines()) {
 
-
-
-
                     new PreparedSentence(s, "INSERT INTO TICKETLINES (TICKET, LINE, PRODUCT, ATTRIBUTESETINSTANCE_ID, UNITS,DISCOUNT, PRICE, DISCOUNTPRICE, TAXID, ATTRIBUTES, PROMOTIONCAMPAIGNID,KOTID,TABLEID,INSTRUCTION,PERSON,KOTDATE,SERVICECHARGEID,SERVICETAXID,PRODUCTIONAREA,PRODUCTIONAREATYPE,PRIMARYADDON,ADDONID,STATION,SALEPRICE,PROMODISCOUNT,PROMODISCOUNTPRICE,LINEID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", SerializerWriteParams.INSTANCE).exec(new DataParams() {
                         @SuppressWarnings("element-type-mismatch")
                         public void writeValues() throws BasicException {
@@ -4308,4 +4306,28 @@ public class DataLogicSales extends BeanFactoryDataSingle {
     public final SentenceList getTables() {
         return new StaticSentence(s, "SELECT ID, NAME FROM PLACES  ORDER BY NAME ", null, JPlacesInfo.getSerializerRead());
     }
+
+//    public List<ProductInfoExt> getTicketLinesToRepeat(String product) {
+//        return (List<ProductInfoExt>) new StaticSentence(s,
+//                "SELECT ID,REFERENCE, CODE, NAME FROM PRODUCTS  WHERE NAME='" + product + "' AND ISACTIVE = 'Y' AND ISAVAILABLE = 'Y' ORDER BY REFERENCE",
+//                null, ProductInfoExt.getSerializerRead());
+//
+//    }
+    public String getProductCode(String pName) throws BasicException {
+        Object[] record = (Object[]) new StaticSentence(s, "SELECT CODE FROM PRODUCTS WHERE NAME = '" + pName + "'", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING})).find(pName);
+        return record == null ? null : (String) record[0];
+    }
+
+    public final RetailTicketInfo getTicketLinesToRepeat(String Id, String splitId) throws BasicException {
+        if (Id == null) {
+            return null;
+        } else {
+            Object[] record = (Object[]) new StaticSentence(s, "SELECT CONTENT FROM SHAREDTICKETS WHERE ID = '" + Id + "' AND SPLITID='" + splitId + "'", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.SERIALIZABLE})).find(Id);
+            return record == null ? null : (RetailTicketInfo) record[0];
+        }
+    }
+    
+
+
+    
 }

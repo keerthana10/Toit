@@ -370,7 +370,7 @@
                                   <Component id="m_jCboCustName" min="-2" pref="190" max="-2" attributes="0"/>
                                   <EmptySpace min="6" pref="6" max="6" attributes="0"/>
                                   <Component id="m_jSearchCustomer" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="7" max="32767" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
                                   <Component id="m_jHomeDelivery" min="-2" pref="116" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -598,7 +598,7 @@
                           <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="m_jTxtAdvance" min="-2" pref="57" max="-2" attributes="0"/>
-                          <EmptySpace pref="562" max="32767" attributes="0"/>
+                          <EmptySpace pref="538" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1568,9 +1568,9 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="16" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jPanel11" alignment="0" pref="740" max="32767" attributes="0"/>
+                      <Component id="jPanel11" alignment="0" pref="743" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">

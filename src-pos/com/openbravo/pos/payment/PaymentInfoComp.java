@@ -14,19 +14,22 @@ import java.util.UUID;
  * @author shilpa
  */
 public class PaymentInfoComp extends PaymentInfo {
+
     private String m_id;
     private double m_dPaid;
     private double m_dTotal;
     private ArrayList<PaymentDetails> compnumbers;
 
-    /** Creates a new instance of PaymentInfoCash */
-    public PaymentInfoComp(double dTotal, double dPaid){
+    /**
+     * Creates a new instance of PaymentInfoCash
+     */
+    public PaymentInfoComp(double dTotal, double dPaid) {
         m_id = UUID.randomUUID().toString();
         m_dTotal = dTotal;
         m_dPaid = dPaid;
-      
+
     }
-  
+
     @Override
     public PaymentInfo copyPayment() {
         return new PaymentInfoStaff(m_dTotal, m_dPaid);
@@ -60,7 +63,6 @@ public class PaymentInfoComp extends PaymentInfo {
         return m_id;
     }
 
- 
     public List getChequenumbers() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -71,11 +73,16 @@ public class PaymentInfoComp extends PaymentInfo {
 
     @Override
     public String getVoucherNo() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "";
     }
 
     @Override
     public ArrayList<VouchersList> getPaymentSplits() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getMobile() {
+        return "";
     }
 }

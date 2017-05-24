@@ -55,14 +55,11 @@ public class Momoe extends MomoePayment {
       this.settled=settled;
       senttax = dlSales.getRetailTaxList();
       try {
-          //getRetailTax List returns list object as abtractinterface  sentenceList which consists of overloaded list methods 
             taxlist = senttax.list();
         } catch (BasicException ex) {
             Logger.getLogger(JRetailPanelTicket.class.getName()).log(Level.SEVERE, null, ex);
         }
-      //Assign the product lines selected and returned as sentenceList through the method getRetailTaxList of DtaLogic Sales class from  MOmoe class 
         taxcollection = taxlist;
-        //pass the taxlist returned as sentenclist to RetailTaxesLogic constructor
         taxeslogic = new RetailTaxesLogic(taxlist,app);
     }
     
@@ -153,7 +150,7 @@ public  void getResponse() {
             
             
             jsonObject.put("merchantId",app.getProperties().getProperty("machine.merchantid"));
-	    jsonObject.put("merchantKey", app.getProperties().getProperty("machine.merchantkey"));
+            jsonObject.put("merchantKey", app.getProperties().getProperty("machine.merchantkey"));
             jsonObject.put("customerPhone",ticket.getMomoePhoneNo());
             jsonObject.put("roundOff",Formats.CURRENCY.formatValue(new Double(ticket.getRoundOffvalue())));
             jsonObject.put("totalAmount",ticket.getTotal());

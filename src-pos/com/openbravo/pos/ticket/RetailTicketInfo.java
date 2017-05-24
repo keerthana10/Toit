@@ -20,7 +20,6 @@ package com.openbravo.pos.ticket;
 
 import bsh.ParseException;
 import com.openbravo.pos.forms.BuyGetPriceInfo;
-import java.lang.*;
 import java.util.*;
 import java.io.*;
 import java.text.DateFormat;
@@ -28,14 +27,9 @@ import java.text.SimpleDateFormat;
 import com.openbravo.pos.payment.PaymentInfo;
 import com.openbravo.data.loader.DataRead;
 import com.openbravo.data.loader.SerializableRead;
-import com.openbravo.data.loader.PreparedSentence;
 import com.openbravo.format.Formats;
 import com.openbravo.basic.BasicException;
-import com.openbravo.data.gui.MessageInf;
-import com.openbravo.data.loader.Datas;
 import com.openbravo.data.loader.LocalRes;
-import com.openbravo.data.loader.PreparedSentence;
-import com.openbravo.data.loader.SerializerWriteBasicExt;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.forms.AppView;
 import com.openbravo.pos.forms.BillPromoRuleInfo;
@@ -52,11 +46,9 @@ import com.openbravo.pos.sales.JRetailPanelTicket;
 import com.openbravo.pos.sales.JTicketLines;
 import com.openbravo.pos.sales.kotInfo;
 import com.openbravo.pos.sales.shared.JTicketsBagShared;
-import com.openbravo.pos.sales.DataLogicReceipts;
 import com.openbravo.pos.util.StringUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  *
@@ -92,7 +84,6 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     private double billValue;
     public java.util.ArrayList<BillPromoRuleInfo> billPromoRuleList;
     protected DataLogicSales dlSales;
-      public DataLogicReceipts dlReceipts;
     protected RetailTicketInfo m_oTicket;
 //     protected TicketInfo m_oTicket1;
     protected JTicketLines m_ticketlines;
@@ -157,7 +148,6 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     private String takeaway;
     private ArrayList<AccessInfo> accessInfo;
     private boolean taxExempt=false;
-     //Logger logger = Logger.getLogger("MyLog");
 
     public boolean isTicketOpen() {
         return ticketOpen;
@@ -270,8 +260,8 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     //Print before billing,settlement,exiting table
     public void writeExternal(ObjectOutput out) throws IOException {
         // esto es solo para serializar tickets que no estan en la bolsa de tickets pendientes
-           System.out.println("writeExternal");
-            System.out.println("writeExternal" + errMsg);
+        //   System.out.println("writeExternal");
+        //     System.out.println("writeExternal" + errMsg);
         out.writeObject(m_sId);
         out.writeInt(tickettype);
         out.writeInt(m_iTicketId);
@@ -280,7 +270,6 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
         out.writeObject(attributes);
         out.writeDouble(dAmt);
         out.writeObject(rate);
-        System.out.println("writeExternal" + rate);
         //List<RetailTicketLineInfo> check = m_aLines;
         try {
             out.writeObject(m_aLines);
@@ -329,7 +318,8 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
             out.writeObject(getAccessInfo());
             out.writeBoolean(taxExempt);
         } catch (IOException e) {
-            System.out.println("e..." + e.getMessage());
+            e.printStackTrace();
+            //System.out.println("e..." + e.getMessage());
         }
 
 
@@ -338,7 +328,6 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     //entering table,reprint after billing
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         // esto es solo para serializar tickets que no estan en la bolsa de tickets pendientes
-        System.out.println("ReadExternal");
         m_sId = (String) in.readObject();
         tickettype = in.readInt();
         m_iTicketId = in.readInt();
@@ -369,12 +358,11 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
         //  refreshTxtFields(1);
         m_User = (UserInfo) in.readObject();
         serviceCharge = in.readDouble();
-         System.out.println("serviceCharge-RetailTicketInfo.java" + serviceCharge);
         serviceTax = in.readDouble();
         serviceTaxRate = in.readDouble();
-            System.out.println("serviceTaxRate-RetailTicketInfo.java" + serviceTaxRate);
+        //    System.out.println("serviceTaxRate" + serviceTaxRate);
         serviceChargeRate = in.readDouble();
-           System.out.println("serviceChargeRate-RetailTicketInfo.java" + serviceChargeRate);
+        //    System.out.println("serviceChargeRate" + serviceChargeRate);
         try {
             tableName = (String) in.readObject();
             loyalcode = (String) in.readObject();
@@ -383,22 +371,12 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
             discountMap = (Map<String, DiscountInfo>) in.readObject();
             discountReasonText = (String) in.readObject();
             paymentInfo = ((List<ResettlePaymentInfo>) in.readObject());
-            
             charges = (List<TicketServiceChargeInfo>) in.readObject();
-          /*  for (TicketServiceChargeInfo l : charges) {
-          
-             System.out.println("charges-RetailTicketInfo.java" + l.getServiceChargeInfo().getRate());
-        }
-          /*  Iterator<TicketServiceChargeInfo> iter = charges.iterator();*/
-           
-            
-           // System.out.println("charges-RetailTicketInfo.java" + charges);
             charges = null;
             servicetaxes = null;
             placeId = (String) in.readObject();
             taxMap = (Map<Double, TaxMapInfo>) in.readObject();
             billTotal = in.readDouble();
-             System.out.println("TotalSales-RetailTicketInfo.java" + billTotal);
             objectUpdateDate = (Date) in.readObject();
             categoryDiscount = in.readBoolean();
             remarks = (String) in.readObject();
@@ -410,12 +388,13 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
             setAccessInfo((ArrayList<AccessInfo>) in.readObject());
             taxExempt = in.readBoolean();
         } catch (IOException e) {
-            System.out.println("ERROR MSG PRINT :" + errMsg);
+           // System.out.println("ERROR MSG PRINT :" + errMsg);
+            e.printStackTrace();
         }
     }
 
     public void readValues(DataRead dr) throws BasicException {
-         System.out.println("readValues");
+        //   System.out.println("readValues");
         m_sId = dr.getString(1);
         tickettype = dr.getInt(2).intValue();
         m_iTicketId = dr.getInt(3).intValue();
@@ -433,7 +412,6 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
         dAmt = dr.getDouble(10).doubleValue();
         //    System.out.println("dr.getString(11)--" + dr.getString(11));
         rate = dr.getString(11);
-         System.out.println("rate under retailtiket Info -read Values)--" + rate);
         documentNo = dr.getString(12);
         m_aLines = new ArrayList<RetailTicketLineInfo>();
 
@@ -445,7 +423,7 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     }
 
     public RetailTicketInfo copyTicket() {
-          System.out.println("copyTicket");
+        //   System.out.println("copyTicket");
         RetailTicketInfo t = new RetailTicketInfo();
 
         t.tickettype = tickettype;
@@ -458,7 +436,6 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
         t.dAmt = dAmt;
         //System.out.println("rate---copy--"+rate);
         t.rate = rate;
-        System.out.println("rate---copy--"+rate);
         t.documentNo = documentNo;
         t.m_aLines = new ArrayList<RetailTicketLineInfo>();
         for (RetailTicketLineInfo l : m_aLines) {
@@ -495,7 +472,7 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
     }
 
     public RetailTicketInfo copySplitTicket(String rate) {
-         System.out.println("copyTicket"+rate);
+        //  System.out.println("copyTicket");
         RetailTicketInfo t = new RetailTicketInfo();
         String uuid = UUID.randomUUID().toString();
         uuid = m_sId.replaceAll("-", "");
@@ -514,6 +491,7 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
         t.documentNo = documentNo;
         t.m_aLines = new ArrayList<RetailTicketLineInfo>();
         for (RetailTicketLineInfo l : m_aLines) {
+         //   System.out.println("Table Order Id"+l.getTbl_orderId());
             t.m_aLines.add(l.copyTicketLine());
         }
         t.refreshLines();
@@ -919,12 +897,12 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
 
         double sum = 0.0;
         if (hasTaxesCalculated()) {
-            System.out.println("hasTaxesCalculated");
+         //   System.out.println("hasTaxesCalculated");
             for (TicketTaxInfo tax : taxes) {
                 sum += tax.getRetailTax(); // Taxes are already rounded...
             }
         } else {
-             System.out.println("hasTaxesCalculated not"); 
+           //  System.out.println("hasTaxesCalculated not"); 
             for (RetailTicketLineInfo line : m_aLines) {
                 sum += line.getTaxWithServiceCharge();
             }
@@ -1818,15 +1796,8 @@ public class RetailTicketInfo implements SerializableRead, Externalizable {
             //adding one line to check the kot status (by shilpa ) especially used when moving table with printed bill
             if (lineItem.getIsKot() == 1) {
                 allLines.add(lineItem.copyTicketLine()); //create duplicate of each line item and add it to duplicate list
-                  //    servedhistorytable(lineItem);        //created by Keerthana
-                            }
+            }
         }
-        
-       /*for (RetailTicketLineInfo l : allLines) { 
-System.out.println("retailticketlineinfo.java--- tbl_orderId"+l.getTbl_orderId());
-dlReceipts.insertservedhistory(l.getTbl_orderId(),l.getKotid(),l.getDuplicateProductName(),l.getMultiply(),l.getPreparationTime(),l.getKotdate(),l.getKdsPrepareStatus(),l.getInstruction(),l.getAddonId(),l.getPrimaryAddon(),l.getProductionArea(),l.getStation(),l.getPreparationStatus(),l.getServedBy(),l.getServedTime());
-       }*/
-        
         List<RetailTicketLineInfo> uniqueLines = new ArrayList<RetailTicketLineInfo>(); //consolidated list of all line-items
         Set<String> productNames = new HashSet<String>(); //set dealing with names of products with no duplicate
         Set<String> ZeroValueproductNames = new HashSet<String>();
@@ -1879,26 +1850,6 @@ dlReceipts.insertservedhistory(l.getTbl_orderId(),l.getKotid(),l.getDuplicatePro
         return uniqueLines; //return this consolidated list
     }
 
-  public void servedhistorytable(RetailTicketLineInfo l )
-        {  
-            //code by keerthana
-            
-        //try{         
-System.out.println("retailticketlineinfo.java--- tbl_orderId"+l.getTbl_orderId());
-//dlReceipts.insertservedhistory(l.getTbl_orderId(),l.getKotid(),l.getDuplicateProductName(),l.getMultiply(),l.getPreparationTime(),l.getKotdate(),l.getKdsPrepareStatus(),l.getInstruction(),l.getAddonId(),l.getPrimaryAddon(),l.getProductionArea(),l.getStation(),l.getPreparationStatus(),l.getServedBy(),l.getServedTime());
-
-Object[] values = new Object[] {l.getTbl_orderId(),l.getKotid(),l.getDuplicateProductName(),l.getMultiply(),l.getPreparationTime(),l.getKotdate(),l.getKdsPrepareStatus(),l.getInstruction(),l.getAddonId(),l.getPrimaryAddon(),l.getProductionArea(),l.getStation(),l.getPreparationStatus(),l.getServedBy(),l.getServedTime()};
- Datas[] datas = new Datas[] {Datas.STRING,Datas.INT,Datas.STRING,Datas.DOUBLE,Datas.STRING,Datas.TIMESTAMP,Datas.STRING,Datas.STRING,Datas.STRING,Datas.INT,Datas.STRING,Datas.STRING,Datas.INT,Datas.STRING,Datas.TIMESTAMP};
- try {
- new PreparedSentence(m_App.getSession(),"INSERT INTO SERVEDHISTORY (ORDERITEM_ID,KOTID,PNAME,MULTIPLY,PREPARATIONTIME,KOTDATE,KDSPREPARESTATUS,INSTRUCTION,ADDONID,PRIMARYADDON,PRODUCTIONAREA,STATION,PREPARATIONSTATUS,SERVEDBY,SERVEDTIME) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new SerializerWriteBasicExt(datas, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14})).exec(values);
-  } catch (BasicException ex) {
-   Logger.getLogger(DataLogicReceipts.class.getName()).log(Level.SEVERE, null, ex);
-            }
-    
-        }
-                  
-      
-    
     public String printTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
         return sdf.format(m_dDate);
@@ -2016,7 +1967,7 @@ Object[] values = new Object[] {l.getTbl_orderId(),l.getKotid(),l.getDuplicatePr
                     double lineTotal2 = respectiveItem.getSubValueBeforeDiscount();   //extract item's totalamount after discount on all quantities
                     double discountvalue2 = respectiveItem.getDiscount();// to check line wise total discount
                       boolean exempt2 = respectiveItem.isTaxExempted();
-                    System.out.println("exempt1-- "+exempt1+" exempt2---"+exempt2);
+                   // System.out.println("exempt1-- "+exempt1+" exempt2---"+exempt2);
                     if ((prodName1.equals(prodName2) && (prodQty1 == prodQty2) && (lineTotal1 == lineTotal2) && (discountvalue1 == discountvalue2) && (exempt1==exempt2))) {
                         continue;    //if all three details matches , the continue iteration till last item in list
                     } else {
@@ -2289,11 +2240,7 @@ Object[] values = new Object[] {l.getTbl_orderId(),l.getKotid(),l.getDuplicatePr
         if (this.iscategoryDiscount()) {
             return getSubTotalOnCatDiscount() + getTaxAfterDiscount() + getServiceTax() + getServiceCharge();
         } else {
-            System.out.println("getTaxAfterDiscount - "+ getTaxAfterDiscount());
-            System.out.println("getTaxAfterDiscount - "+ getServiceTax()); 
-                    System.out.println("getServiceCharget - "+ getServiceCharge());
             return getSubTotal() + getTaxAfterDiscount() + getServiceTax() + getServiceCharge();
-            
         }
     }
 

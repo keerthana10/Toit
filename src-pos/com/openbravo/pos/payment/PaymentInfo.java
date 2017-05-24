@@ -32,7 +32,7 @@ public abstract class PaymentInfo {
     public abstract String getTransactionID();
     public abstract String getVoucherNo();
     public abstract ArrayList<VouchersList> getPaymentSplits();
-
+    public abstract String getMobile();
   //   public abstract List getChequenumbers();
     
     public String printTotal() {

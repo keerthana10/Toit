@@ -432,6 +432,7 @@ public class JPosActionsPanel extends JPanel implements JPanelView, BeanFactoryA
         m_jChkCancel = new javax.swing.JCheckBox();
         m_jChkIBillDiscount = new javax.swing.JCheckBox();
         m_jChkSplitBill = new javax.swing.JCheckBox();
+        m_jChkServiceChargeExempt = new javax.swing.JCheckBox();
         jScrollPane3 = new javax.swing.JScrollPane();
         jPanelPArea = new javax.swing.JPanel();
         jPanelPrArea = new javax.swing.JPanel();
@@ -759,6 +760,10 @@ public class JPosActionsPanel extends JPanel implements JPanelView, BeanFactoryA
         m_jChkSplitBill.setText("Split Bill");
         jPanel4.add(m_jChkSplitBill, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, 100, 20));
 
+        m_jChkServiceChargeExempt.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        m_jChkServiceChargeExempt.setText("ServiceCharge Exempt");
+        jPanel4.add(m_jChkServiceChargeExempt, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 210, 180, 20));
+
         jScrollPane2.setViewportView(jPanel4);
 
         jTabbedPane1.addTab("Pos Actions", jScrollPane2);
@@ -1058,6 +1063,7 @@ public class JPosActionsPanel extends JPanel implements JPanelView, BeanFactoryA
         String splitBill = "N";
         String kot = "N";
         String moveTable = "N";
+        String serviceChargeExempt="N";
         int posActionsCount = 0;
         if (m_jChkPrintBill.isSelected()) {
             printBill = "Y";
@@ -1090,6 +1096,11 @@ public class JPosActionsPanel extends JPanel implements JPanelView, BeanFactoryA
         } else {
             moveTable = "N";
         }
+        if(m_jChkServiceChargeExempt.isSelected()){
+            serviceChargeExempt="Y";
+        }else{
+             serviceChargeExempt="N";
+        }
 
         try {
             posActionsCount = m_dlSales.getPosActionsCount(roleId);
@@ -1099,9 +1110,9 @@ public class JPosActionsPanel extends JPanel implements JPanelView, BeanFactoryA
 
 
         if (posActionsCount == 0) {
-            m_dlSales.insertPosActionsAccess(roleId, printBill, settleBill, cancelBill, billDiscount, splitBill, moveTable);
+            m_dlSales.insertPosActionsAccess(roleId, printBill, settleBill, cancelBill, billDiscount, splitBill, moveTable,serviceChargeExempt);
         } else {
-            m_dlSales.updatePosActionsAccess(roleId, printBill, settleBill, cancelBill, billDiscount, splitBill, moveTable);
+            m_dlSales.updatePosActionsAccess(roleId, printBill, settleBill, cancelBill, billDiscount, splitBill, moveTable,serviceChargeExempt);
         }
     }
 
@@ -1557,6 +1568,7 @@ if (m_jChkKodMaster.isSelected()) {
         m_jChkKodMaster.setSelected(false);
         m_jChkLineTaxSummary.setSelected(false);
         m_jChkOldBillwise.setSelected(false);
+        m_jChkServiceChargeExempt.setSelected(false);
         classValue.clear();
         chkClassName.clear();
     }
@@ -1804,6 +1816,11 @@ if (m_jChkKodMaster.isSelected()) {
                 } else {
                     m_jChkMoveTable.setSelected(false);
                 }
+                 if (posActions.get(0).getServiceChargeAccess().equals("Y")) {
+                    m_jChkServiceChargeExempt.setSelected(true);
+                } else {
+                    m_jChkServiceChargeExempt.setSelected(false);
+                }
             }
             //   if(int i=0;
             //  String permissions = m_dlSystem.findRolePermissions(rolesList.get(m_jCboRoles.getSelectedIndex()).getID());
@@ -1892,6 +1909,7 @@ if (m_jChkKodMaster.isSelected()) {
     private javax.swing.JCheckBox m_jChkSalesReports;
     private javax.swing.JCheckBox m_jChkSectionWise;
     private javax.swing.JCheckBox m_jChkServiceCharge;
+    private javax.swing.JCheckBox m_jChkServiceChargeExempt;
     private javax.swing.JCheckBox m_jChkSettleBill;
     private javax.swing.JCheckBox m_jChkSettlement;
     private javax.swing.JCheckBox m_jChkSplitBill;

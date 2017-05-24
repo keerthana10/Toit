@@ -115,5 +115,4 @@ public class JRetailPanelTicketSales extends JRetailPanelTicket {
             }
         }  
     }
-    
 }

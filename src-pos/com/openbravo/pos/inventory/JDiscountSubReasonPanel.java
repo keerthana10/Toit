@@ -331,7 +331,7 @@ public class JDiscountSubReasonPanel extends JPanel implements JPanelView,BeanFa
         System.out.println("index is " + index);
 
         if (index == -1) {
-            JOptionPane.showMessageDialog(JDiscountSubReasonPanel.this, "Please select the Reason");
+            JOptionPane.showMessageDialog(JDiscountSubReasonPanel.this, "Please select the Discount Sub-Category");
         } else {
             try {
                 String val = m_jReasonList.getSelectedValue().toString();
@@ -356,10 +356,10 @@ public class JDiscountSubReasonPanel extends JPanel implements JPanelView,BeanFa
 
     private void jbtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSaveActionPerformed
        if ( m_jSubReasonText.getText().equals("")) {
-            JOptionPane.showMessageDialog(JDiscountSubReasonPanel.this, "Please enter the SubReason");
+            JOptionPane.showMessageDialog(JDiscountSubReasonPanel.this, "Please enter the Discount Sub-Category");
            
         } else   if (jComboReason.getSelectedIndex()==-1) {
-            JOptionPane.showMessageDialog(JDiscountSubReasonPanel.this, "Please select the Reason");
+            JOptionPane.showMessageDialog(JDiscountSubReasonPanel.this, "Please select the Discount Sub-Category");
         } 
        else {
             try {

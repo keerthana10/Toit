@@ -103,4 +103,9 @@ public class PaymentInfoVoucher extends PaymentInfo {
     public ArrayList<VouchersList> getPaymentSplits() {
         return null;
     }
+
+    @Override
+    public String getMobile() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
